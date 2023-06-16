@@ -4,6 +4,7 @@ import itertools
 import numpy as np
 import os 
 from matplotlib import pyplot as plt
+from tqdm import tqdm
 
 param_names = ['PNS index', 'SNS index', 'Mean RR', 'RMSSD', 'LF-HF']
 role_names = ['Anes', 'Nurs', 'Perf', 'Surg']
@@ -55,16 +56,16 @@ def import_case_data(data_dir = 'data', case_id = 3):
     dataset = np.swapaxes(dataset, 1, 2)
     return dataset
 
-def plot_params(dataset):
+def plot_params(dataset, case_id):
     limits = {'PNS index': [-4,5],
               'SNS index': [-2,12], 
               'Mean RR': [400,1200], 
               'RMSSD': [0,160], 
               'LF-HF': [0,70] 
               }
-    plt.figure(figsize=(10,4))
-    for case_id, case_data in enumerate(dataset):
+    for case_data in dataset:
         for param_id, param_data in enumerate(case_data):
+            plt.figure(figsize=(10,4))
             n_samples = param_data.shape[1]
             x_axis = np.linspace(0, n_samples-1, n_samples)
             for actor_id, role_data in enumerate(param_data):
@@ -77,9 +78,13 @@ def plot_params(dataset):
             if not os.path.isdir(f'plots/Case{case_id:02d}'):
                 os.mkdir(f'plots/Case{case_id:02d}')
             plt.savefig(f'plots/Case{case_id:02d}/{param_names[param_id]}.png')
-            plt.clf()
+            plt.close()
 
-
-dataset = import_case_data()
-plot_params(dataset)
+for i in tqdm(range(1, 41)):
+    if i not in [5, 9, 14, 16, 24, 39]:
+        try:
+            dataset = import_case_data()
+            plot_params(dataset, i)
+        except Exception as e:
+            print(f"There was a problem with case {i}")
 
