@@ -17,7 +17,10 @@ def import_case_data(data_dir = 'data', case_id = 3):
     for role_name in role_names:
         file_name = f"{data_dir}/Case{case_id:02d}/{phase_name}/3296_{case_id:02d}_{role_name}_hrv.csv"
         if not os.path.isfile(file_name):
-            empty_role_data = np.full((5, 82), np.nan)
+            if max_num_samples > 0:
+                empty_role_data = np.full((5, max_num_samples), np.nan)
+            else:
+                empty_role_data = np.full((5, 1), np.nan)
             dataset.append(empty_role_data)
         else:
             role_data = []
@@ -80,11 +83,15 @@ def plot_params(dataset, case_id):
             plt.savefig(f'plots/Case{case_id:02d}/{param_names[param_id]}.png')
             plt.close()
 
-for i in tqdm(range(1, 41)):
-    if i not in [5, 9, 14, 16, 24, 39]:
-        try:
-            dataset = import_case_data()
-            plot_params(dataset, i)
-        except Exception as e:
-            print(f"There was a problem with case {i}")
+def generate_all_plots():
+    for i in tqdm(range(1, 41)):
+        if i not in [5, 9, 14, 16, 24, 39]:
+            try:
+                dataset = import_case_data(case_id = i)
+                plot_params(dataset, i)
+            except Exception as e:
+                print(f"There was a problem with case {i}")
+
+latex_dir = '648bad436055ba2df65649bc'
+generate_all_plots()
 
