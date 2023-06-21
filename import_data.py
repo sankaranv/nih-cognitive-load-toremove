@@ -8,6 +8,7 @@ from tqdm import tqdm
 
 param_names = ['PNS index', 'SNS index', 'Mean RR', 'RMSSD', 'LF-HF']
 role_names = ['Anes', 'Nurs', 'Perf', 'Surg']
+cases_summary = pd.read_excel('data/NIH-OR-cases-summary.xlsx').iloc[1:, :]
 
 def import_case_data(data_dir = 'data', case_id = 3):
     relevant_lines = [66, 67, 72, 78, 111]
@@ -72,9 +73,13 @@ def plot_params(dataset, case_id):
             n_samples = param_data.shape[1]
             x_axis = np.linspace(0, n_samples-1, n_samples)
             for actor_id, role_data in enumerate(param_data):
-                plt.plot(x_axis, role_data, label=role_names[actor_id])
+                role = role_names[actor_id]
+                actor_name = cases_summary.loc[cases_summary['Case'] == case_id][role].values[0]
+                actor_param_mean = means[param_id, actor_id]
+                plt.axhline(y = actor_param_mean, color=f"C{actor_id}", linestyle = '--', alpha = 0.4)
+                plt.plot(x_axis, role_data, label=f"{role} {actor_name}")
             plt.title(f"Heart rate variability for case {case_id}: {param_names[param_id]}")
-            plt.xlabel("Sample")
+            plt.xlabel("Timestep")
             plt.ylabel(param_names[param_id])
             plt.ylim(limits[param_names[param_id]])
             plt.legend()
@@ -90,8 +95,23 @@ def generate_all_plots():
                 dataset = import_case_data(case_id = i)
                 plot_params(dataset, i)
             except Exception as e:
+                print(e)
+
+def get_means():
+    means = np.zeros((5, 4))
+    num_samples = 0
+    for i in range(1, 41):
+        if i not in [5, 9, 14, 16, 24, 39]:
+            try:
+                dataset = np.nan_to_num(import_case_data(case_id = i))
+                num_samples += dataset.shape[-1]
+                means += np.sum(dataset[0], axis=-1)
+            except Exception as e:
                 print(f"There was a problem with case {i}")
+    return means / num_samples    
 
 latex_dir = '648bad436055ba2df65649bc'
+means = get_means()
 generate_all_plots()
+
 
