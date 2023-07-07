@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 from tqdm import tqdm
 import seaborn as sns
 from itertools import combinations
+from math import ceil
 
 param_names = ['PNS index', 'SNS index', 'Mean RR', 'RMSSD', 'LF-HF']
 role_names = ['Anes', 'Nurs', 'Perf', 'Surg']
@@ -174,12 +175,21 @@ def generate_scatterplots(latex_dir=None):
                         for ax_counter, (idx_1, idx_2) in enumerate(combinations([0,1,2,3],2)):
                             samples_x = dataset[param_id, idx_1, :]
                             samples_y = dataset[param_id, idx_2, :]
+
+                            # Set ranges for scatterplots
+                            if (not np.isnan(samples_x).all()) and (not np.isnan(samples_y).all()):
+                                range_high = ceil(max(max(samples_x), max(samples_y)))
+                                range_low = ceil(min(min(samples_x), min(samples_y)))
+                                range_equal = max(abs(range_high), abs(range_low))
+                            else:
+                                range_equal = 3
+                            
                             axs.flat[ax_counter].scatter(samples_x, samples_y)
                             axs.flat[ax_counter].set_xlabel(f"{role_names[idx_1]} {param_name}")
                             axs.flat[ax_counter].set_ylabel(f"{role_names[idx_2]} {param_name}")
-                            axs.flat[ax_counter].set_xlim(-3,3)
-                            axs.flat[ax_counter].set_ylim(-3,3)
-                        fig.suptitle(f"Scatterplots for standardized {param_name}")
+                            axs.flat[ax_counter].set_xlim(-range_equal, range_equal)
+                            axs.flat[ax_counter].set_ylim(-range_equal, range_equal)
+                        fig.suptitle(f"Standardized {param_name} for Case {i:02d}")
                         fig.savefig(f"plots/scatterplots/{param_name}/Case{i:02d}.png")
                         if latex_dir is not None:
                             fig.savefig(f"{latex_dir}/plots/scatterplots/{param_name}/Case{i:02d}.png")
@@ -190,31 +200,16 @@ def generate_scatterplots(latex_dir=None):
 
 latex_dir = '648bad436055ba2df65649bc'
 generate_line_plots('plots', latex_dir)
-plot_densities_by_role(latex_dir)
 generate_scatterplots(latex_dir)
+plot_densities_by_role(latex_dir)
 
 
 '''
 Next steps
 
-Plots to generate or update:
-* Density plots -> one for each role, each one has a density corresponding to each actor
-* Fix bug with average line in plots being brought down by NaNs
+- Add correlation coefficients to every scatterplots
+- Density plot of all correlation coefficients
 
-Clarifying questions:
-* Did the surgeon, nurse, etc. all put on their own monitors, or did someone do it for them? Was it the same person?
-* Is there anything different about how Surgeon 2 put on their monitor?
-* What happened in the cases where there are two different nurses/profusioninsts for one surgery?
-* What happened in case 32? Was the surgeon doing anything, or just observing? The LF/HF is very flat
-
-Scatterplots:
-- Normalize the measurements for each actor by surgery - (z-scores) basically zero mean unit variance within each surgery
-    -> once they are on the same scale, can make scatterplots between pairs of actors (within the surgery)
-
-Misc:
-- Write short notes on what each parameter means and its normal range
-
-- Analysis, interpretation, observation of all of the plots, data analyses, etc.
 
 '''
 
