@@ -208,7 +208,11 @@ plot_densities_by_role(latex_dir)
 Next steps
 
 - Add correlation coefficients to every scatterplots
-- Density plot of all correlation coefficients
+- Density plot of all correlation coefficients (one plot per parameter)
+- Take the z-scores (which factors away the individual variability. One density plot per role per param, one line for each phase
+
+- Add table of content and links to jump around
+- Get Anna Liu's plots
 
 
 '''
