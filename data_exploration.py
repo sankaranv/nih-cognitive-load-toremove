@@ -160,7 +160,10 @@ def plot_densities_by_role(latex_dir=None):
 
 def generate_scatterplots(latex_dir=None):
     means = get_means()
-    print(means)
+
+    # Collect correlation coefficients for each parameter
+    param_corr_coef_samples = {'PNS index': [], 'SNS index': [], 'Mean RR': [], 'RMSSD': [], 'LF-HF': []}
+    
     for i in tqdm(range(1, 41)):
         if i not in [5, 9, 14, 16, 24, 39]:
             try:
@@ -171,24 +174,39 @@ def generate_scatterplots(latex_dir=None):
                     std = np.nanstd(dataset, axis=-1)
                     dataset = (dataset - means[:, :, None]) / std[:, :, None]
                     for param_id, param_name in enumerate(param_names):
+
+
                         fig, axs = plt.subplots(2, 3, figsize=(15, 10))
                         for ax_counter, (idx_1, idx_2) in enumerate(combinations([0,1,2,3],2)):
                             samples_x = dataset[param_id, idx_1, :]
                             samples_y = dataset[param_id, idx_2, :]
 
-                            # Set ranges for scatterplots
-                            if (not np.isnan(samples_x).all()) and (not np.isnan(samples_y).all()):
-                                range_high = ceil(max(max(samples_x), max(samples_y)))
-                                range_low = ceil(min(min(samples_x), min(samples_y)))
-                                range_equal = max(abs(range_high), abs(range_low))
+                            # # Set ranges for scatterplots
+                            # if (not np.isnan(samples_x).all()) and (not np.isnan(samples_y).all()):
+                            #     range_high = ceil(max(max(samples_x), max(samples_y)))
+                            #     range_low = ceil(min(min(samples_x), min(samples_y)))
+                            #     range_equal = max(abs(range_high), abs(range_low))
+                            # else:
+                            #     range_equal = 3
+                            range_equal = 6
+
+                            # Correlation coefficient that is NaN-sensitive
+                            corr_coef = np.ma.corrcoef(np.ma.masked_invalid(samples_x), np.ma.masked_invalid(samples_y))
+                            if corr_coef[0,1].data == 0:
+                                corr_coef = corr_coef[0,1]
                             else:
-                                range_equal = 3
-                            
+                                corr_coef = corr_coef[0,1]
+                                param_corr_coef_samples[param_name].append(corr_coef)
+
+                            # Plot
                             axs.flat[ax_counter].scatter(samples_x, samples_y)
                             axs.flat[ax_counter].set_xlabel(f"{role_names[idx_1]} {param_name}")
                             axs.flat[ax_counter].set_ylabel(f"{role_names[idx_2]} {param_name}")
                             axs.flat[ax_counter].set_xlim(-range_equal, range_equal)
                             axs.flat[ax_counter].set_ylim(-range_equal, range_equal)
+                            axs.flat[ax_counter].set_title(f"rho = {corr_coef:04f}")
+
+                        # Save overall plot
                         fig.suptitle(f"Standardized {param_name} for Case {i:02d}")
                         fig.savefig(f"plots/scatterplots/{param_name}/Case{i:02d}.png")
                         if latex_dir is not None:
@@ -197,22 +215,35 @@ def generate_scatterplots(latex_dir=None):
             except Exception as e:
                 print(e)
 
+    # Density plot of correlation coefficients
+    for param_name in param_names:
+        sns.set_style('whitegrid')
+        sns.kdeplot(param_corr_coef_samples[param_name], bw_method=0.5, label=param_name)
+        plt.xlabel(f"Pearson Correlation Coefficient")
+        plt.ylabel("Density")
+        plt.title(f"Density of Pearson correlation coefficient values between pairs of actors")
+    plt.legend()
+    plt.savefig(f"plots/density_plots/corr_coef.png")
+    if latex_dir is not None:
+        plt.savefig(f"{latex_dir}/plots/density_plots/corr_coef.png")
+    plt.close()
+
 
 latex_dir = '648bad436055ba2df65649bc'
-generate_line_plots('plots', latex_dir)
+# generate_line_plots('plots', latex_dir)
 generate_scatterplots(latex_dir)
-plot_densities_by_role(latex_dir)
+# plot_densities_by_role(latex_dir)
 
 
 '''
 Next steps
 
-- Add correlation coefficients to every scatterplots
-- Density plot of all correlation coefficients (one plot per parameter)
-- Take the z-scores (which factors away the individual variability. One density plot per role per param, one line for each phase
-
+* Add correlation coefficients to every scatterplot
+* Density plot of all correlation coefficients (one plot per parameter)
+* Get Anna Liu's plots
 - Add table of content and links to jump around
-- Get Anna Liu's plots
+
+- Take the z-scores (which factors away the individual variability. One density plot per role per param, one line for each phase. Label number of NaNs in the density plots
 
 
 '''
