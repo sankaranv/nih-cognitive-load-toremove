@@ -8,6 +8,8 @@ from tqdm import tqdm
 import seaborn as sns
 from itertools import combinations
 from math import ceil
+import datetime
+import matplotlib.ticker as ticker
 
 param_names = ['PNS index', 'SNS index', 'Mean RR', 'RMSSD', 'LF-HF']
 role_names = ['Anes', 'Nurs', 'Perf', 'Surg']
@@ -63,7 +65,7 @@ def import_case_data(data_dir = 'data', case_id = 3):
     dataset = np.swapaxes(dataset, 1, 2)
     return dataset
 
-def plot_params(dataset, means, case_id, plots_dir, latex_dir):
+def plot_params(dataset, means, phase_ids, case_id, plots_dir, latex_dir):
     limits = {'PNS index': [-4,5],
               'SNS index': [-2,12], 
               'Mean RR': [400,1200], 
@@ -81,6 +83,24 @@ def plot_params(dataset, means, case_id, plots_dir, latex_dir):
                 actor_param_mean = means[param_id, actor_id]
                 plt.axhline(y = actor_param_mean, color=f"C{actor_id}", linestyle = '--', alpha = 0.4)
                 plt.plot(x_axis, role_data, label=f"{role} {actor_name}")
+
+            # Add phase ID lines
+            minor_ticks = []
+            minor_labels = []
+            for phase, interval in enumerate(phase_ids[case_id]):
+                plt.axvspan(interval[0], interval[1], color="black", alpha = 0.1)
+                if interval[0] is not None and interval[1] is not None:
+                    midpoint = int(interval[0] + (interval[1]-interval[0])/2)
+                    minor_ticks.append(midpoint)
+                    minor_labels.append(f"P{phase+1}")
+            
+            ax = plt.gca()
+            ax.xaxis.set_minor_locator(ticker.FixedLocator(minor_ticks))
+            ax.xaxis.set_minor_formatter(ticker.FixedFormatter(minor_labels))
+            ax.set_xticks(minor_ticks, minor=True)
+            ax.tick_params(axis="x", which="minor", direction="out", 
+                      top=True, labeltop=True, bottom=False, labelbottom=False)
+
             plt.title(f"Heart rate variability for case {case_id}: {param_names[param_id]}")
             plt.xlabel("Timestep")
             plt.ylabel(param_names[param_id])
@@ -95,17 +115,19 @@ def plot_params(dataset, means, case_id, plots_dir, latex_dir):
             # Push plots directly to Overleaf
             if latex_dir is not None:
                 plt.savefig(f'{latex_dir}/plots/line_plots/Case{case_id:02d}/{param_names[param_id]}.png')
+                
             
             plt.close()
 
 def generate_line_plots(plots_dir='plots', latex_dir=None):
     means = get_means()
+    phase_ids = get_phase_ids()
     print(means)
     for i in tqdm(range(1, 41)):
         if i not in [5, 9, 14, 16, 24, 39]:
             try:
                 dataset = import_case_data(case_id = i)
-                plot_params(dataset, means, i, plots_dir, latex_dir)
+                plot_params(dataset, means, phase_ids, i, plots_dir, latex_dir)
             except Exception as e:
                 print(e)
 
@@ -156,6 +178,47 @@ def plot_densities_by_role(latex_dir=None):
             plt.savefig(f"plots/density_plots/{role}/{param}.png")
             if latex_dir is not None:
                 plt.savefig(f"{latex_dir}/plots/density_plots/{role}/{param}.png")
+            plt.close()
+
+def generate_per_phase_density_plots(latex_dir=None):
+    per_phase_normalized_samples = {'PNS index': {}, 'SNS index': {}, 'Mean RR': {}, 'RMSSD': {}, 'LF-HF': {}}
+    phase_ids = get_phase_ids()
+    for i in tqdm(range(1, 41)):
+        if i not in [5, 9, 14, 16, 24, 39, 28]:
+            try:
+                dataset = import_case_data(case_id = i)[0]
+                # Ignore cases with missing per-step data
+                if dataset.shape[-1] > 1:
+                    means = np.nanmean(dataset, axis=-1)
+                    std = np.nanstd(dataset, axis=-1)
+                    dataset = (dataset - means[:, :, None]) / std[:, :, None]
+                    for param_id, param_name in enumerate(param_names):
+                        for actor_id, role_name in enumerate(role_names):
+                            if role_name not in per_phase_normalized_samples[param_name].keys():
+                                per_phase_normalized_samples[param_name][role_name] = {}
+                            for phase, interval in enumerate(phase_ids[i]):
+                                if interval[0] is not None and interval[1] is not None:
+                                    per_case_samples = dataset[param_id, actor_id, interval[0]:interval[1]]
+                                    if phase not in per_phase_normalized_samples[param_name][role_name].keys():
+                                        per_phase_normalized_samples[param_name][role_name][phase] = per_case_samples
+                                    else:
+                                        per_phase_normalized_samples[param_name][role_name][phase] = np.concatenate((per_phase_normalized_samples[param_name][role_name][phase], per_case_samples))
+            except Exception as e:
+                print(e)
+
+    for role in role_names: 
+        for param in param_names:
+            for phase_id, per_phase_samples in per_phase_normalized_samples[param][role].items():
+                samples = per_phase_samples[~np.isnan(per_phase_samples)]
+                sns.set_style('whitegrid')
+                sns.kdeplot(per_phase_samples, bw_method=0.5, label=f"Phase {phase_id} ({len(per_phase_samples)} samples)")
+                plt.xlabel(f"Normalized {param}")
+                plt.ylabel("Density")
+                plt.title(f"Per-phase density of normalized {param} for {role}")
+            plt.legend()
+            plt.savefig(f"plots/density_plots/per_phase/{param}/{role}.png")
+            if latex_dir is not None:
+                plt.savefig(f"{latex_dir}/plots/density_plots/per_phase/{param}/{role}.png")
             plt.close()
 
 def generate_scatterplots(latex_dir=None):
@@ -228,11 +291,44 @@ def generate_scatterplots(latex_dir=None):
         plt.savefig(f"{latex_dir}/plots/density_plots/corr_coef.png")
     plt.close()
 
+def hms_to_min(s):
+    t = 0
+    for u in s.split(':'):
+        t = 60 * t + int(u)
+    # Round to the minute
+    if t % 60 >= 30:
+        return int(t/60) + 1
+    else:
+        return int(t/60)
+
+def get_phase_ids(data_dir = 'data', time_interval = 5):
+    phase_ids = {}
+    for i in range(1, 41):
+        if i not in [5, 9, 14, 16, 24, 39]:
+            phase_ids[i] = []
+            file_name = f"{data_dir}/Case{i:02d}/3296_{i:02d}-abstractedPhases.csv"
+            with open(file_name, 'r') as f:
+                df = pd.read_csv(file_name, header=0)
+                df = df.dropna(axis=0, how='all')
+                for phase, row in df.iterrows():
+                    start_time = row['Onset_Time']
+                    stop_time = row['Offset_Time']
+                    if not isinstance(start_time, str):
+                        phase_ids[i].append([None, None])
+                    else:
+                        start_idx = hms_to_min(start_time) // time_interval
+                        stop_idx = hms_to_min(stop_time) // time_interval
+                        phase_ids[i].append([start_idx, stop_idx])
+    return phase_ids
+
+
 
 latex_dir = '648bad436055ba2df65649bc'
+generate_per_phase_density_plots(latex_dir)
 # generate_line_plots('plots', latex_dir)
-generate_scatterplots(latex_dir)
+# generate_scatterplots(latex_dir)
 # plot_densities_by_role(latex_dir)
+# get_phase_ids()
 
 
 '''
