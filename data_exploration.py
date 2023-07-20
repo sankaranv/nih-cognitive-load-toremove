@@ -15,13 +15,19 @@ param_names = ['PNS index', 'SNS index', 'Mean RR', 'RMSSD', 'LF-HF']
 role_names = ['Anes', 'Nurs', 'Perf', 'Surg']
 cases_summary = pd.read_excel('data/NIH-OR-cases-summary.xlsx').iloc[1:, :]
 
-def import_case_data(data_dir = 'data', case_id = 3):
+def import_case_data(data_dir = 'data', case_id = 3, time_interval='5min'):
     relevant_lines = [66, 67, 72, 78, 111]
-    phase_name = 'cognitiveLoad-phases-5min'
+    if time_interval == '5min':
+        phase_name = 'cognitiveLoad-phases-5min'
+    else:
+        phase_name = 'cognitiveLoad-phases-1min'
     dataset = []
     max_num_samples = 0
     for role_name in role_names:
-        file_name = f"{data_dir}/Case{case_id:02d}/{phase_name}/3296_{case_id:02d}_{role_name}_hrv.csv"
+        if time_interval == '5min':
+            file_name = f"{data_dir}/Case{case_id:02d}/{phase_name}/3296_{case_id:02d}_{role_name}_hrv.csv"
+        else:
+            file_name = f"{data_dir}/Case{case_id:02d}/{phase_name}/3296_{case_id:02d}_{role_name}_hrv-1min.csv"
         if not os.path.isfile(file_name):
             if max_num_samples > 0:
                 empty_role_data = np.full((5, max_num_samples), np.nan)
@@ -65,7 +71,7 @@ def import_case_data(data_dir = 'data', case_id = 3):
     dataset = np.swapaxes(dataset, 1, 2)
     return dataset
 
-def plot_params(dataset, means, phase_ids, case_id, plots_dir, latex_dir):
+def plot_params(dataset, means, phase_ids, case_id, plots_dir, latex_dir, time_interval='5min'):
     limits = {'PNS index': [-4,5],
               'SNS index': [-2,12], 
               'Mean RR': [400,1200], 
@@ -101,7 +107,7 @@ def plot_params(dataset, means, phase_ids, case_id, plots_dir, latex_dir):
             ax.tick_params(axis="x", which="minor", direction="out", 
                       top=True, labeltop=True, bottom=False, labelbottom=False)
 
-            plt.title(f"Heart rate variability for case {case_id}: {param_names[param_id]}")
+            plt.title(f"Heart rate variability for case {case_id}: {param_names[param_id]} ({time_interval})")
             plt.xlabel("Timestep")
             plt.ylabel(param_names[param_id])
             plt.ylim(limits[param_names[param_id]])
@@ -110,46 +116,46 @@ def plot_params(dataset, means, phase_ids, case_id, plots_dir, latex_dir):
             # Write plots to file
             # if not os.path.isdir(f'{plots_dir}/line_plots/Case{case_id:02d}'):
             #     os.mkdir(f'{plots_dir}/line_plots/Case{case_id:02d}')
-            plt.savefig(f'{plots_dir}/line_plots/Case{case_id:02d}/{param_names[param_id]}.png')
+            plt.savefig(f'{plots_dir}/{time_interval}/line_plots/Case{case_id:02d}/{param_names[param_id]}.png')
 
             # Push plots directly to Overleaf
             if latex_dir is not None:
-                plt.savefig(f'{latex_dir}/plots/line_plots/Case{case_id:02d}/{param_names[param_id]}.png')
+                plt.savefig(f'{latex_dir}/plots/{time_interval}/line_plots/Case{case_id:02d}/{param_names[param_id]}.png')
                 
             
             plt.close()
 
-def generate_line_plots(plots_dir='plots', latex_dir=None):
-    means = get_means()
-    phase_ids = get_phase_ids()
+def generate_line_plots(plots_dir='plots', latex_dir=None, time_interval='5min'):
+    means = get_means(time_interval)
+    phase_ids = get_phase_ids(time_interval=time_interval)
     print(means)
     for i in tqdm(range(1, 41)):
         if i not in [5, 9, 14, 16, 24, 39]:
             try:
-                dataset = import_case_data(case_id = i)
-                plot_params(dataset, means, phase_ids, i, plots_dir, latex_dir)
+                dataset = import_case_data(case_id = i, time_interval=time_interval)
+                plot_params(dataset, means, phase_ids, i, plots_dir, latex_dir, time_interval)
             except Exception as e:
                 print(e)
 
-def get_means():
+def get_means(time_interval='5min'):
     means = np.zeros((5, 4))
     num_samples = np.zeros((5, 4))
     for i in range(1, 41):
         if i not in [5, 9, 14, 16, 24, 39]:
             try:
-                dataset = import_case_data(case_id = i)[0]
+                dataset = import_case_data(case_id = i, time_interval=time_interval)[0]
                 num_samples += np.sum(~np.isnan(dataset), axis=-1)
                 means += np.sum(np.nan_to_num(dataset), axis=-1)
             except Exception as e:
                 print(f"There was a problem with case {i}")
     return means / num_samples
 
-def plot_densities_by_role(latex_dir=None):
+def plot_densities_by_role(latex_dir=None, time_interval='5min'):
     # Collect data by actor ID
     dataset_by_actor = {'Anes': {}, 'Nurs': {}, 'Perf': {}, 'Surg': {}}
     for i in range(1, 41):
         if i not in [5, 9, 14, 16, 24, 39]:
-            dataset = import_case_data(case_id = i)
+            dataset = import_case_data(case_id = i, time_interval=time_interval)
             for param_id, param_data in enumerate(dataset[0]):
                 for actor_id, role_data in enumerate(param_data):
                     samples = role_data[np.where(~np.isnan(role_data))]
@@ -164,29 +170,29 @@ def plot_densities_by_role(latex_dir=None):
                         dataset_by_actor[role][param][key] = role_data
     for role in role_names: 
         for param in param_names: 
-            if not os.path.isdir(f"plots/density_plots/{role}"):
-                os.mkdir(f"plots/density_plots/{role}")
+            if not os.path.isdir(f"plots/{time_interval}/density_plots/{role}"):
+                os.mkdir(f"plots/{time_interval}/density_plots/{role}")
             plt.figure(figsize=(10,4))
             for actor, samples in dataset_by_actor[role][param].items():
                 sns.set_style('whitegrid')
                 sns.kdeplot(samples, bw_method=0.5, label=actor)
                 plt.xlabel(f"{param}")
                 plt.ylabel("Density")
-                plt.title(f"Density of {param} for {role}")
+                plt.title(f"Density of {param} ({time_interval}) for {role}")
                 plt.legend()
                 print(f"{role} {param} {actor}")
-            plt.savefig(f"plots/density_plots/{role}/{param}.png")
+            plt.savefig(f"plots/{time_interval}/density_plots/{role}/{param}.png")
             if latex_dir is not None:
-                plt.savefig(f"{latex_dir}/plots/density_plots/{role}/{param}.png")
+                plt.savefig(f"{latex_dir}/plots/{time_interval}/density_plots/{role}/{param}.png")
             plt.close()
 
-def generate_per_phase_density_plots(latex_dir=None):
+def generate_per_phase_density_plots(latex_dir=None, time_interval='5min'):
     per_phase_normalized_samples = {'PNS index': {}, 'SNS index': {}, 'Mean RR': {}, 'RMSSD': {}, 'LF-HF': {}}
-    phase_ids = get_phase_ids()
+    phase_ids = get_phase_ids(time_interval=time_interval)
     for i in tqdm(range(1, 41)):
         if i not in [5, 9, 14, 16, 24, 39, 28]:
             try:
-                dataset = import_case_data(case_id = i)[0]
+                dataset = import_case_data(case_id = i, time_interval=time_interval)[0]
                 # Ignore cases with missing per-step data
                 if dataset.shape[-1] > 1:
                     means = np.nanmean(dataset, axis=-1)
@@ -214,15 +220,15 @@ def generate_per_phase_density_plots(latex_dir=None):
                 sns.kdeplot(per_phase_samples, bw_method=0.5, label=f"Phase {phase_id} ({len(per_phase_samples)} samples)")
                 plt.xlabel(f"Normalized {param}")
                 plt.ylabel("Density")
-                plt.title(f"Per-phase density of normalized {param} for {role}")
+                plt.title(f"Per-phase density of normalized {param} ({time_interval}) for {role}")
             plt.legend()
-            plt.savefig(f"plots/density_plots/per_phase/{param}/{role}.png")
+            plt.savefig(f"plots/{time_interval}/density_plots/per_phase/{param}/{role}.png")
             if latex_dir is not None:
-                plt.savefig(f"{latex_dir}/plots/density_plots/per_phase/{param}/{role}.png")
+                plt.savefig(f"{latex_dir}/plots/{time_interval}/density_plots/per_phase/{param}/{role}.png")
             plt.close()
 
-def generate_scatterplots(latex_dir=None):
-    means = get_means()
+def generate_scatterplots(latex_dir=None, time_interval='5min'):
+    means = get_means(time_interval)
 
     # Collect correlation coefficients for each parameter
     param_corr_coef_samples = {'PNS index': [], 'SNS index': [], 'Mean RR': [], 'RMSSD': [], 'LF-HF': []}
@@ -230,7 +236,7 @@ def generate_scatterplots(latex_dir=None):
     for i in tqdm(range(1, 41)):
         if i not in [5, 9, 14, 16, 24, 39]:
             try:
-                dataset = import_case_data(case_id = i)[0]
+                dataset = import_case_data(case_id = i, time_interval=time_interval)[0]
                 # Ignore cases with missing per-step data
                 if dataset.shape[-1] > 1:
                     means = np.nanmean(dataset, axis=-1)
@@ -271,9 +277,9 @@ def generate_scatterplots(latex_dir=None):
 
                         # Save overall plot
                         fig.suptitle(f"Standardized {param_name} for Case {i:02d}")
-                        fig.savefig(f"plots/scatterplots/{param_name}/Case{i:02d}.png")
+                        fig.savefig(f"plots/{time_interval}/scatterplots/{param_name}/Case{i:02d}.png")
                         if latex_dir is not None:
-                            fig.savefig(f"{latex_dir}/plots/scatterplots/{param_name}/Case{i:02d}.png")
+                            fig.savefig(f"{latex_dir}/plots/{time_interval}/scatterplots/{param_name}/Case{i:02d}.png")
                         plt.close()
             except Exception as e:
                 print(e)
@@ -284,11 +290,11 @@ def generate_scatterplots(latex_dir=None):
         sns.kdeplot(param_corr_coef_samples[param_name], bw_method=0.5, label=param_name)
         plt.xlabel(f"Pearson Correlation Coefficient")
         plt.ylabel("Density")
-        plt.title(f"Density of Pearson correlation coefficient values between pairs of actors")
+        plt.title(f"Density of correlation coefficient ({time_interval}) between pairs of actors")
     plt.legend()
-    plt.savefig(f"plots/density_plots/corr_coef.png")
+    plt.savefig(f"plots/{time_interval}/density_plots/corr_coef.png")
     if latex_dir is not None:
-        plt.savefig(f"{latex_dir}/plots/density_plots/corr_coef.png")
+        plt.savefig(f"{latex_dir}/plots/{time_interval}/density_plots/corr_coef.png")
     plt.close()
 
 def hms_to_min(s):
@@ -301,7 +307,8 @@ def hms_to_min(s):
     else:
         return int(t/60)
 
-def get_phase_ids(data_dir = 'data', time_interval = 5):
+def get_phase_ids(data_dir = 'data', time_interval = '5min'):
+
     phase_ids = {}
     for i in range(1, 41):
         if i not in [5, 9, 14, 16, 24, 39]:
@@ -316,31 +323,16 @@ def get_phase_ids(data_dir = 'data', time_interval = 5):
                     if not isinstance(start_time, str):
                         phase_ids[i].append([None, None])
                     else:
-                        start_idx = hms_to_min(start_time) // time_interval
-                        stop_idx = hms_to_min(stop_time) // time_interval
+                        start_idx = hms_to_min(start_time) // int(time_interval[0])
+                        stop_idx = hms_to_min(stop_time) // int(time_interval[0])
                         phase_ids[i].append([start_idx, stop_idx])
     return phase_ids
 
 
 
 latex_dir = '648bad436055ba2df65649bc'
-generate_per_phase_density_plots(latex_dir)
-# generate_line_plots('plots', latex_dir)
-# generate_scatterplots(latex_dir)
-# plot_densities_by_role(latex_dir)
-# get_phase_ids()
-
-
-'''
-Next steps
-
-* Add correlation coefficients to every scatterplot
-* Density plot of all correlation coefficients (one plot per parameter)
-* Get Anna Liu's plots
-- Add table of content and links to jump around
-
-- Take the z-scores (which factors away the individual variability. One density plot per role per param, one line for each phase. Label number of NaNs in the density plots
-
-
-'''
+# generate_per_phase_density_plots(latex_dir, time_interval='1min')
+generate_line_plots('plots', latex_dir, time_interval='1min')
+# generate_scatterplots(latex_dir, time_interval='5min')
+# plot_densities_by_role(latex_dir, time_interval='5min')
 
