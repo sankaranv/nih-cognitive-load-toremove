@@ -10,6 +10,7 @@ from itertools import combinations
 from math import ceil
 import datetime
 import matplotlib.ticker as ticker
+import matplotlib as mpl
 
 param_names = ['PNS index', 'SNS index', 'Mean RR', 'RMSSD', 'LF-HF']
 role_names = ['Anes', 'Nurs', 'Perf', 'Surg']
@@ -186,7 +187,35 @@ def plot_densities_by_role(latex_dir=None, time_interval='5min'):
                 plt.savefig(f"{latex_dir}/plots/{time_interval}/density_plots/{role}/{param}.png")
             plt.close()
 
-def generate_per_phase_density_plots(latex_dir=None, time_interval='5min'):
+def get_per_phase_actor_ids(time_interval='5min'):
+    per_phase_actor_ids = {'Anes': {}, 'Nurs': {}, 'Perf': {}, 'Surg': {}}
+    phase_ids = get_phase_ids(time_interval=time_interval)
+    print("Getting per phase actor IDs")
+    for i in tqdm(range(1, 41)):
+        if i not in [5, 9, 14, 16, 24, 39, 28]:
+            try:
+                dataset = import_case_data(case_id = i, time_interval=time_interval)[0]
+                # Ignore cases with missing per-step data
+                if dataset.shape[-1] > 1:
+                    # We assume all parameters have the same number of measurements in the dataset
+                    param_id = 0
+                    for actor_id, role_name in enumerate(role_names):
+                        for phase, interval in enumerate(phase_ids[i]):
+                            if interval[0] is not None and interval[1] is not None:
+                                per_case_samples = dataset[param_id, actor_id, interval[0]:interval[1]]
+                                # Log actor names in case needed for coloring scatterplots
+                                # Obtain actor name for the given case
+                                case_actor_name = cases_summary.loc[cases_summary['Case'] == i][role_name].values[0]
+                                if phase not in per_phase_actor_ids[role_name]:
+                                    per_phase_actor_ids[role_name][phase] = np.full(len(per_case_samples), case_actor_name)
+                                else:
+                                    per_phase_actor_ids[role_name][phase] = np.concatenate((per_phase_actor_ids[role_name][phase], np.full(len(per_case_samples), case_actor_name)))
+            except Exception as e:
+                print(e)
+    return per_phase_actor_ids
+
+def get_per_phase_normalized_samples(time_interval='5min'):
+    print("Getting per phase normalized samples")
     per_phase_normalized_samples = {'PNS index': {}, 'SNS index': {}, 'Mean RR': {}, 'RMSSD': {}, 'LF-HF': {}}
     phase_ids = get_phase_ids(time_interval=time_interval)
     for i in tqdm(range(1, 41)):
@@ -205,13 +234,19 @@ def generate_per_phase_density_plots(latex_dir=None, time_interval='5min'):
                             for phase, interval in enumerate(phase_ids[i]):
                                 if interval[0] is not None and interval[1] is not None:
                                     per_case_samples = dataset[param_id, actor_id, interval[0]:interval[1]]
+                                    
+                                    # Select out data for the interval of each phase
                                     if phase not in per_phase_normalized_samples[param_name][role_name].keys():
                                         per_phase_normalized_samples[param_name][role_name][phase] = per_case_samples
                                     else:
                                         per_phase_normalized_samples[param_name][role_name][phase] = np.concatenate((per_phase_normalized_samples[param_name][role_name][phase], per_case_samples))
             except Exception as e:
                 print(e)
+    return per_phase_normalized_samples
 
+def generate_per_phase_density_plots(latex_dir=None, time_interval='5min'):
+    
+    per_phase_normalized_samples = get_per_phase_normalized_samples(time_interval)
     for role in role_names: 
         for param in param_names:
             for phase_id, per_phase_samples in per_phase_normalized_samples[param][role].items():
@@ -297,6 +332,85 @@ def generate_scatterplots(latex_dir=None, time_interval='5min'):
         plt.savefig(f"{latex_dir}/plots/{time_interval}/density_plots/corr_coef.png")
     plt.close()
 
+def scatterplots_per_phase(latex_dir=None, time_interval='5min', color_by = 'x'):
+
+    per_phase_normalized_samples = get_per_phase_normalized_samples(time_interval)
+
+    # Convert per phase actor names to indices for coloring scatterplots
+    per_phase_actor_ids = get_per_phase_actor_ids(time_interval)
+    unique_actor_names = {}
+    for role_name, actor_names_by_phase in per_phase_actor_ids.items():
+        unique_actor_names[role_name] = []
+        # First get unique actor names
+        for _, names_per_phase in actor_names_by_phase.items():
+            unique_actor_names[role_name] = np.union1d(unique_actor_names[role_name], np.unique(names_per_phase))
+    
+    phase_colors = {}
+    for role_name, actor_names_by_phase in per_phase_actor_ids.items():
+        phase_colors[role_name] = {}
+        num_colors = len(unique_actor_names[role_name])
+        for phase, names_per_phase in actor_names_by_phase.items():
+            phase_colors[role_name][phase] = np.zeros(len(names_per_phase))
+
+            # Is this vectorizable or has a numpy command?
+            for color_idx, color_key in enumerate(unique_actor_names[role_name]):
+                phase_colors[role_name][phase][np.where(names_per_phase == color_key)] = color_idx
+    
+    for (role_id_1, role_id_2) in combinations([0,1,2,3],2):
+        # For each pair of roles, generate one figure with [num_phases] scatterplots for each parameter
+        role_1 = role_names[role_id_1]
+        role_2 = role_names[role_id_2]
+
+        # Obtain colors for samples based on actor ID
+        role_1_color_keys, role_1_color_idx = np.unique(per_phase_actor_ids[role_1][0], return_inverse=True)
+        role_2_color_keys, role_2_color_idx = np.unique(per_phase_actor_ids[role_2][0], return_inverse=True)
+        print(role_1, role_2)
+
+        for param_name, param_data in per_phase_normalized_samples.items(): 
+            num_phases = len(param_data[role_1].keys())
+            fig, axs = plt.subplots(2, 4, figsize=(20, 10))
+            if color_by == 'x':
+                cmap = mpl.colors.ListedColormap([f'C{i}' for i in range(len(unique_actor_names[role_1]))])
+            else:
+                cmap = mpl.colors.ListedColormap([f'C{i}' for i in range(len(unique_actor_names[role_2]))])
+            for phase in range(num_phases):
+                current_ax = axs.flat[phase]
+                samples_x = param_data[role_1][phase]
+                samples_y = param_data[role_2][phase]
+
+                # Plot
+                range_equal = 6
+                if color_by == 'x':
+                    sc = current_ax.scatter(samples_x, samples_y, alpha = 0.4, c=phase_colors[role_1][phase], cmap=cmap, label=unique_actor_names[role_1])
+                else:
+                    sc = current_ax.scatter(samples_x, samples_y, alpha = 0.4, c=phase_colors[role_2][phase], cmap=cmap, label=unique_actor_names[role_2])
+                current_ax.set_xlabel(f"{role_1} {param_name}")
+                current_ax.set_ylabel(f"{role_2} {param_name}")
+                current_ax.set_xlim(-range_equal, range_equal)
+                current_ax.set_ylim(-range_equal, range_equal)
+                current_ax.set_title(f"Phase {phase}")
+
+            # Create legend for colours
+            if color_by == 'x':
+                color_tick_labels = unique_actor_names[role_1]
+            else:
+                color_tick_labels = unique_actor_names[role_2]
+            norm = mpl.colors.Normalize(0, len(color_tick_labels))
+            sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+            # print(color_tick_labels, np.unique(phase_colors[role_1][phase], return_counts=True))
+            cbar_ax = fig.add_axes([0.92, 0.1, 0.02, 0.8])  # [left, bottom, width, height]
+            cbar = plt.colorbar(sm, cax=cbar_ax)
+            cbar.set_ticklabels(color_tick_labels)
+            cbar.ax.set_yticks(np.arange(len(color_tick_labels)) + 0.5)
+            cbar.ax.set_yticklabels(color_tick_labels)
+
+            # Save overall plot
+            fig.suptitle(f"Standardized {param_name} for {role_1} vs. {role_2}")
+            plt.savefig(f"plots/{time_interval}/per_phase/{param_name}/{role_1}-{role_2}-{color_by}.png")
+            if latex_dir is not None:
+                fig.savefig(f"{latex_dir}/plots/{time_interval}/per_phase/{param_name}/{role_1}-{role_2}-{color_by}.png")
+            plt.close()
+
 def hms_to_min(s):
     t = 0
     for u in s.split(':'):
@@ -331,8 +445,16 @@ def get_phase_ids(data_dir = 'data', time_interval = '5min'):
 
 
 latex_dir = '648bad436055ba2df65649bc'
-# generate_per_phase_density_plots(latex_dir, time_interval='1min')
-generate_line_plots('plots', latex_dir, time_interval='1min')
-# generate_scatterplots(latex_dir, time_interval='5min')
-# plot_densities_by_role(latex_dir, time_interval='5min')
+time_interval = '5min'
+# generate_per_phase_density_plots(latex_dir, time_interval)
+# generate_line_plots('plots', latex_dir, time_interval)
+# generate_scatterplots(latex_dir, time_interval)
+# plot_densities_by_role(latex_dir, time_interval)
+scatterplots_per_phase(latex_dir, time_interval, color_by='x')
+scatterplots_per_phase(latex_dir, time_interval, color_by='y')
+# per_phase_normalized_samples, per_phase_actor_ids = get_per_phase_normalized_samples(time_interval, return_actor_ids=True)
+
+'''
+Correlation among team members that takes phases into account
+'''
 
