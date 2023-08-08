@@ -369,6 +369,7 @@ def scatterplots_per_phase(latex_dir=None, time_interval='5min', color_by = 'x')
         for param_name, param_data in per_phase_normalized_samples.items(): 
             num_phases = len(param_data[role_1].keys())
             fig, axs = plt.subplots(2, 4, figsize=(20, 10))
+            sns.set_style('whitegrid')
             if color_by == 'x':
                 cmap = mpl.colors.ListedColormap([f'C{i}' for i in range(len(unique_actor_names[role_1]))])
             else:
@@ -452,9 +453,4 @@ time_interval = '5min'
 # plot_densities_by_role(latex_dir, time_interval)
 scatterplots_per_phase(latex_dir, time_interval, color_by='x')
 scatterplots_per_phase(latex_dir, time_interval, color_by='y')
-# per_phase_normalized_samples, per_phase_actor_ids = get_per_phase_normalized_samples(time_interval, return_actor_ids=True)
-
-'''
-Correlation among team members that takes phases into account
-'''
 
