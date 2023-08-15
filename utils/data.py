@@ -7,18 +7,20 @@ from tqdm import tqdm
 from itertools import combinations
 from math import ceil
 import datetime
+import random
 
-global param_names
-global role_names
+global param_names, param_indices
+global role_names, role_indices
 global cases_summary
 
-
 param_names = ["PNS index", "SNS index", "Mean RR", "RMSSD", "LF-HF"]
+param_indices = {"PNS index": 0, "SNS index": 1, "Mean RR": 2, "RMSSD": 3, "LF-HF": 4}
 role_names = ["Anes", "Nurs", "Perf", "Surg"]
-cases_summary = pd.read_excel("data/NIH-OR-cases-summary.xlsx").iloc[1:, :]
+role_indices = {"Anes": 0, "Nurs": 1, "Perf": 2, "Surg": 3}
+cases_summary = pd.read_excel("../data/NIH-OR-cases-summary.xlsx").iloc[1:, :]
 
 
-def import_case_data(data_dir="data", case_id=3, time_interval="5min"):
+def import_case_data(data_dir="../data", case_id=3, time_interval="5min"):
     relevant_lines = [66, 67, 72, 78, 111]
     if time_interval == "5min":
         phase_name = "cognitiveLoad-phases-5min"
@@ -164,9 +166,54 @@ def get_phase_ids(data_dir="data", time_interval="5min"):
     return phase_ids
 
 
-def make_dataset(time_interval="5min"):
+def make_dataset(time_interval="5min", param_id=None):
+    # Shape of the data for each case is (5, 4, num_samples) or (5, num_samples)
     dataset = {}
     for i in tqdm(range(1, 41)):
         if i not in [5, 9, 14, 16, 24, 39, 28]:
-            dataset[i] = import_case_data(case_id=i, time_interval="5min")[0]
+            if param_id is None:
+                dataset[i] = import_case_data(case_id=i, time_interval="5min")[0]
+            else:
+                dataset[i] = import_case_data(case_id=i, time_interval="5min")[0][
+                    :, param_id
+                ]
     return dataset
+
+
+def make_nan_masks(dataset):
+    nan_masks = {}
+    for case_id in dataset.keys():
+        nan_masks[case_id] = np.isnan(dataset[case_id])
+    return nan_masks
+
+
+def get_max_len(dataset):
+    max_len = 0
+    for case_id in dataset.keys():
+        if dataset[case_id].shape[-1] > max_len:
+            max_len = dataset[case_id].shape[-1]
+    return max_len
+
+
+def make_train_test_split(
+    dataset,
+    train_split: float = 0.6,
+    val_split: float = 0.2,
+    test_split: float = 0.2,
+):
+    cases = list(dataset.keys())
+    random.shuffle(cases)
+    if train_split + val_split + test_split != 1:
+        raise ValueError(
+            "Train, validation, and test splits must sum to 1.0. "
+            f"Current splits sum to {train_split + val_split + test_split}"
+        )
+    train_idx = int(train_split * len(cases))
+    val_idx = train_idx + int(val_split * len(cases))
+    train_cases = cases[:train_idx]
+    val_cases = cases[train_idx:val_idx]
+    test_cases = cases[val_idx:]
+    train_dataset = {case: dataset[case] for case in train_cases}
+    val_dataset = {case: dataset[case] for case in val_cases}
+    test_dataset = {case: dataset[case] for case in test_cases}
+    return train_dataset, val_dataset, test_dataset
