@@ -1,0 +1,85 @@
+wandb_version: 1
+
+time_interval:
+  desc: null
+  value: 5min
+epochs:
+  desc: null
+  value: 10
+lr:
+  desc: null
+  value: 0.001
+batch_size:
+  desc: null
+  value: 64
+n_layers:
+  desc: null
+  value: 2
+n_heads:
+  desc: null
+  value: 2
+d_model:
+  desc: null
+  value: 64
+d_hidden:
+  desc: null
+  value: 64
+dropout:
+  desc: null
+  value: 0.5
+seed:
+  desc: null
+  value: 42
+save_dir:
+  desc: null
+  value: ./checkpoints
+log_dir:
+  desc: null
+  value: ./logs
+save_freq:
+  desc: null
+  value: 10
+log_freq:
+  desc: null
+  value: 10
+num_workers:
+  desc: null
+  value: 4
+cuda:
+  desc: null
+  value: false
+hrv_param:
+  desc: null
+  value: Mean RR
+train_split:
+  desc: null
+  value: 0.6
+val_split:
+  desc: null
+  value: 0.2
+test_split:
+  desc: null
+  value: 0.2
+_wandb:
+  desc: null
+  value:
+    python_version: 3.11.4
+    cli_version: 0.15.8
+    framework: torch
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1692227077.764399
+    t:
+      1:
+      - 1
+      - 55
+      2:
+      - 1
+      - 55
+      3:
+      - 16
+      - 23
+      4: 3.11.4
+      5: 0.15.8
+      8:
+      - 5

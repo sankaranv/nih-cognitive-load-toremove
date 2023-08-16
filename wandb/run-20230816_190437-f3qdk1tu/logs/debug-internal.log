@@ -1,0 +1,185 @@
+2023-08-16 19:04:37,754 INFO    StreamThr :69085 [internal.py:wandb_internal():86] W&B internal server running at pid: 69085, started at: 2023-08-16 19:04:37.734873
+2023-08-16 19:04:37,756 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: status
+2023-08-16 19:04:37,771 INFO    WriterThread:69085 [datastore.py:open_for_write():85] open: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/run-f3qdk1tu.wandb
+2023-08-16 19:04:37,772 DEBUG   SenderThread:69085 [sender.py:send():379] send: header
+2023-08-16 19:04:37,816 DEBUG   SenderThread:69085 [sender.py:send():379] send: run
+2023-08-16 19:04:38,126 INFO    SenderThread:69085 [dir_watcher.py:__init__():211] watching files in: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files
+2023-08-16 19:04:38,126 INFO    SenderThread:69085 [sender.py:_start_run_threads():1121] run started: f3qdk1tu with start time 1692227077.764399
+2023-08-16 19:04:38,126 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: summary_record
+2023-08-16 19:04:38,127 INFO    SenderThread:69085 [sender.py:_save_file():1375] saving file wandb-summary.json with policy end
+2023-08-16 19:04:38,133 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: check_version
+2023-08-16 19:04:38,133 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: check_version
+2023-08-16 19:04:38,249 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: run_start
+2023-08-16 19:04:38,266 DEBUG   HandlerThread:69085 [system_info.py:__init__():31] System info init
+2023-08-16 19:04:38,266 DEBUG   HandlerThread:69085 [system_info.py:__init__():46] System info init done
+2023-08-16 19:04:38,266 INFO    HandlerThread:69085 [system_monitor.py:start():181] Starting system monitor
+2023-08-16 19:04:38,266 INFO    SystemMonitor:69085 [system_monitor.py:_start():145] Starting system asset monitoring threads
+2023-08-16 19:04:38,268 INFO    HandlerThread:69085 [system_monitor.py:probe():201] Collecting system info
+2023-08-16 19:04:38,268 INFO    SystemMonitor:69085 [interfaces.py:start():190] Started cpu monitoring
+2023-08-16 19:04:38,268 DEBUG   HandlerThread:69085 [system_info.py:probe():195] Probing system
+2023-08-16 19:04:38,269 INFO    SystemMonitor:69085 [interfaces.py:start():190] Started disk monitoring
+2023-08-16 19:04:38,269 INFO    SystemMonitor:69085 [interfaces.py:start():190] Started memory monitoring
+2023-08-16 19:04:38,271 INFO    SystemMonitor:69085 [interfaces.py:start():190] Started network monitoring
+2023-08-16 19:04:38,278 DEBUG   HandlerThread:69085 [system_info.py:_probe_git():180] Probing git
+2023-08-16 19:04:38,327 DEBUG   HandlerThread:69085 [system_info.py:_probe_git():188] Probing git done
+2023-08-16 19:04:38,328 DEBUG   HandlerThread:69085 [system_info.py:probe():240] Probing system done
+2023-08-16 19:04:38,328 DEBUG   HandlerThread:69085 [system_monitor.py:probe():210] {'os': 'macOS-10.16-x86_64-i386-64bit', 'python': '3.11.4', 'heartbeatAt': '2023-08-16T23:04:38.268976', 'startedAt': '2023-08-16T23:04:37.725105', 'docker': None, 'cuda': None, 'args': (), 'state': 'running', 'program': '/Users/sankaran/Research/nih-cognitive-load/hrv_generative.py', 'codePath': 'hrv_generative.py', 'git': {'remote': 'https://github.com/sankaranv/nih-cognitive-load', 'commit': '24df534be7dc201886cdd2a41ff1b821d32f275d'}, 'email': None, 'root': '/Users/sankaran/Research/nih-cognitive-load', 'host': 'montecarlo', 'username': 'sankaran', 'executable': '/Users/sankaran/miniconda3/envs/nih-cognitive-load/bin/python', 'cpu_count': 8, 'cpu_count_logical': 16, 'cpu_freq': {'current': 2300, 'min': 2300, 'max': 2300}, 'cpu_freq_per_core': [{'current': 2300, 'min': 2300, 'max': 2300}], 'disk': {'total': 931.546989440918, 'used': 8.536746978759766}, 'memory': {'total': 32.0}}
+2023-08-16 19:04:38,328 INFO    HandlerThread:69085 [system_monitor.py:probe():211] Finished collecting system info
+2023-08-16 19:04:38,328 INFO    HandlerThread:69085 [system_monitor.py:probe():214] Publishing system info
+2023-08-16 19:04:38,328 DEBUG   HandlerThread:69085 [system_info.py:_save_pip():51] Saving list of pip packages installed into the current environment
+2023-08-16 19:04:38,329 DEBUG   HandlerThread:69085 [system_info.py:_save_pip():67] Saving pip packages done
+2023-08-16 19:04:38,329 DEBUG   HandlerThread:69085 [system_info.py:_save_conda():74] Saving list of conda packages installed into the current environment
+2023-08-16 19:04:39,131 INFO    Thread-12 :69085 [dir_watcher.py:_on_file_created():271] file/dir created: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/conda-environment.yaml
+2023-08-16 19:04:39,131 INFO    Thread-12 :69085 [dir_watcher.py:_on_file_created():271] file/dir created: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/requirements.txt
+2023-08-16 19:04:39,131 INFO    Thread-12 :69085 [dir_watcher.py:_on_file_created():271] file/dir created: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/wandb-summary.json
+2023-08-16 19:04:42,668 DEBUG   HandlerThread:69085 [system_info.py:_save_conda():86] Saving conda packages done
+2023-08-16 19:04:42,669 INFO    HandlerThread:69085 [system_monitor.py:probe():216] Finished publishing system info
+2023-08-16 19:04:42,681 DEBUG   SenderThread:69085 [sender.py:send():379] send: files
+2023-08-16 19:04:42,681 INFO    SenderThread:69085 [sender.py:_save_file():1375] saving file wandb-metadata.json with policy now
+2023-08-16 19:04:42,685 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: stop_status
+2023-08-16 19:04:42,685 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: stop_status
+2023-08-16 19:04:42,912 DEBUG   SenderThread:69085 [sender.py:send():379] send: telemetry
+2023-08-16 19:04:42,912 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: status_report
+2023-08-16 19:04:42,914 DEBUG   SenderThread:69085 [sender.py:send():379] send: exit
+2023-08-16 19:04:42,914 INFO    SenderThread:69085 [sender.py:send_exit():584] handling exit code: 1
+2023-08-16 19:04:42,914 INFO    SenderThread:69085 [sender.py:send_exit():586] handling runtime: 4
+2023-08-16 19:04:42,915 INFO    SenderThread:69085 [sender.py:_save_file():1375] saving file wandb-summary.json with policy end
+2023-08-16 19:04:42,916 INFO    SenderThread:69085 [sender.py:send_exit():592] send defer
+2023-08-16 19:04:42,916 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: defer
+2023-08-16 19:04:42,916 INFO    HandlerThread:69085 [handler.py:handle_request_defer():170] handle defer: 0
+2023-08-16 19:04:42,917 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: defer
+2023-08-16 19:04:42,917 INFO    SenderThread:69085 [sender.py:send_request_defer():608] handle sender defer: 0
+2023-08-16 19:04:42,917 INFO    SenderThread:69085 [sender.py:transition_state():612] send defer: 1
+2023-08-16 19:04:42,917 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: defer
+2023-08-16 19:04:42,917 INFO    HandlerThread:69085 [handler.py:handle_request_defer():170] handle defer: 1
+2023-08-16 19:04:42,918 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: defer
+2023-08-16 19:04:42,918 INFO    SenderThread:69085 [sender.py:send_request_defer():608] handle sender defer: 1
+2023-08-16 19:04:42,918 INFO    SenderThread:69085 [sender.py:transition_state():612] send defer: 2
+2023-08-16 19:04:42,918 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: defer
+2023-08-16 19:04:42,918 INFO    HandlerThread:69085 [handler.py:handle_request_defer():170] handle defer: 2
+2023-08-16 19:04:42,918 INFO    HandlerThread:69085 [system_monitor.py:finish():190] Stopping system monitor
+2023-08-16 19:04:42,918 DEBUG   SystemMonitor:69085 [system_monitor.py:_start():159] Starting system metrics aggregation loop
+2023-08-16 19:04:42,919 INFO    HandlerThread:69085 [interfaces.py:finish():202] Joined cpu monitor
+2023-08-16 19:04:42,919 DEBUG   SystemMonitor:69085 [system_monitor.py:_start():166] Finished system metrics aggregation loop
+2023-08-16 19:04:42,919 INFO    HandlerThread:69085 [interfaces.py:finish():202] Joined disk monitor
+2023-08-16 19:04:42,919 DEBUG   SystemMonitor:69085 [system_monitor.py:_start():170] Publishing last batch of metrics
+2023-08-16 19:04:42,919 INFO    HandlerThread:69085 [interfaces.py:finish():202] Joined memory monitor
+2023-08-16 19:04:42,920 INFO    HandlerThread:69085 [interfaces.py:finish():202] Joined network monitor
+2023-08-16 19:04:42,920 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: defer
+2023-08-16 19:04:42,920 INFO    SenderThread:69085 [sender.py:send_request_defer():608] handle sender defer: 2
+2023-08-16 19:04:42,921 INFO    SenderThread:69085 [sender.py:transition_state():612] send defer: 3
+2023-08-16 19:04:42,921 DEBUG   SenderThread:69085 [sender.py:send():379] send: stats
+2023-08-16 19:04:42,921 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: defer
+2023-08-16 19:04:42,921 INFO    HandlerThread:69085 [handler.py:handle_request_defer():170] handle defer: 3
+2023-08-16 19:04:42,921 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: defer
+2023-08-16 19:04:42,921 INFO    SenderThread:69085 [sender.py:send_request_defer():608] handle sender defer: 3
+2023-08-16 19:04:42,921 INFO    SenderThread:69085 [sender.py:transition_state():612] send defer: 4
+2023-08-16 19:04:42,921 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: defer
+2023-08-16 19:04:42,922 INFO    HandlerThread:69085 [handler.py:handle_request_defer():170] handle defer: 4
+2023-08-16 19:04:42,922 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: defer
+2023-08-16 19:04:42,922 INFO    SenderThread:69085 [sender.py:send_request_defer():608] handle sender defer: 4
+2023-08-16 19:04:42,922 INFO    SenderThread:69085 [sender.py:transition_state():612] send defer: 5
+2023-08-16 19:04:42,922 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: defer
+2023-08-16 19:04:42,922 INFO    HandlerThread:69085 [handler.py:handle_request_defer():170] handle defer: 5
+2023-08-16 19:04:42,923 DEBUG   SenderThread:69085 [sender.py:send():379] send: summary
+2023-08-16 19:04:42,923 INFO    SenderThread:69085 [sender.py:_save_file():1375] saving file wandb-summary.json with policy end
+2023-08-16 19:04:42,923 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: defer
+2023-08-16 19:04:42,924 INFO    SenderThread:69085 [sender.py:send_request_defer():608] handle sender defer: 5
+2023-08-16 19:04:42,924 INFO    SenderThread:69085 [sender.py:transition_state():612] send defer: 6
+2023-08-16 19:04:42,924 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: defer
+2023-08-16 19:04:42,924 INFO    HandlerThread:69085 [handler.py:handle_request_defer():170] handle defer: 6
+2023-08-16 19:04:42,924 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: defer
+2023-08-16 19:04:42,924 INFO    SenderThread:69085 [sender.py:send_request_defer():608] handle sender defer: 6
+2023-08-16 19:04:42,927 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: status_report
+2023-08-16 19:04:43,080 INFO    SenderThread:69085 [sender.py:transition_state():612] send defer: 7
+2023-08-16 19:04:43,080 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: defer
+2023-08-16 19:04:43,080 INFO    HandlerThread:69085 [handler.py:handle_request_defer():170] handle defer: 7
+2023-08-16 19:04:43,080 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: defer
+2023-08-16 19:04:43,080 INFO    SenderThread:69085 [sender.py:send_request_defer():608] handle sender defer: 7
+2023-08-16 19:04:43,135 INFO    wandb-upload_0:69085 [upload_job.py:push():131] Uploaded file /var/folders/y3/j27mkggx48b8v6d58yknh1jw0000gq/T/tmpz42zmrgowandb/f35955lx-wandb-metadata.json
+2023-08-16 19:04:43,144 INFO    Thread-12 :69085 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/config.yaml
+2023-08-16 19:04:43,144 INFO    Thread-12 :69085 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/conda-environment.yaml
+2023-08-16 19:04:43,144 INFO    Thread-12 :69085 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/wandb-summary.json
+2023-08-16 19:04:43,144 INFO    Thread-12 :69085 [dir_watcher.py:_on_file_created():271] file/dir created: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/output.log
+2023-08-16 19:04:43,144 INFO    Thread-12 :69085 [dir_watcher.py:_on_file_created():271] file/dir created: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/wandb-metadata.json
+2023-08-16 19:04:43,767 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: poll_exit
+2023-08-16 19:04:44,919 INFO    SenderThread:69085 [sender.py:transition_state():612] send defer: 8
+2023-08-16 19:04:44,919 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: poll_exit
+2023-08-16 19:04:44,919 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: defer
+2023-08-16 19:04:44,920 INFO    HandlerThread:69085 [handler.py:handle_request_defer():170] handle defer: 8
+2023-08-16 19:04:44,920 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: defer
+2023-08-16 19:04:44,920 INFO    SenderThread:69085 [sender.py:send_request_defer():608] handle sender defer: 8
+2023-08-16 19:04:44,920 INFO    SenderThread:69085 [job_builder.py:build():281] Attempting to build job artifact
+2023-08-16 19:04:44,921 INFO    SenderThread:69085 [job_builder.py:_get_source_type():400] is repo sourced job
+2023-08-16 19:04:44,923 INFO    SenderThread:69085 [job_builder.py:build():374] adding wandb-job metadata file
+2023-08-16 19:04:44,932 INFO    SenderThread:69085 [sender.py:transition_state():612] send defer: 9
+2023-08-16 19:04:44,932 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: defer
+2023-08-16 19:04:44,932 INFO    HandlerThread:69085 [handler.py:handle_request_defer():170] handle defer: 9
+2023-08-16 19:04:44,933 DEBUG   SenderThread:69085 [sender.py:send():379] send: artifact
+2023-08-16 19:04:45,149 INFO    Thread-12 :69085 [dir_watcher.py:_on_file_modified():288] file/dir modified: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/output.log
+2023-08-16 19:04:46,082 INFO    wandb-upload_0:69085 [upload_job.py:push():89] Uploaded file /Users/sankaran/Library/Application Support/wandb/artifacts/staging/tmps8a_vt_o
+2023-08-16 19:04:46,088 INFO    wandb-upload_1:69085 [upload_job.py:push():89] Uploaded file /Users/sankaran/Library/Application Support/wandb/artifacts/staging/tmpd2qn167z
+2023-08-16 19:04:46,833 INFO    SenderThread:69085 [sender.py:send_artifact():1475] sent artifact job-https___github.com_sankaranv_nih-cognitive-load_hrv_generative.py - {'id': 'QXJ0aWZhY3Q6NTQzNzE4Njkx', 'digest': '8769015382e5ee0c4075b0da480cd5cf', 'state': 'PENDING', 'aliases': [], 'artifactSequence': {'id': 'QXJ0aWZhY3RDb2xsZWN0aW9uOjkwOTY3OTk5', 'latestArtifact': None}, 'version': 'latest'}
+2023-08-16 19:04:46,833 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: defer
+2023-08-16 19:04:46,833 INFO    SenderThread:69085 [sender.py:send_request_defer():608] handle sender defer: 9
+2023-08-16 19:04:46,833 INFO    SenderThread:69085 [dir_watcher.py:finish():358] shutting down directory watcher
+2023-08-16 19:04:47,166 INFO    SenderThread:69085 [dir_watcher.py:finish():388] scan: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files
+2023-08-16 19:04:47,167 INFO    SenderThread:69085 [dir_watcher.py:finish():402] scan save: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/requirements.txt requirements.txt
+2023-08-16 19:04:47,167 INFO    SenderThread:69085 [dir_watcher.py:finish():402] scan save: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/output.log output.log
+2023-08-16 19:04:47,168 INFO    SenderThread:69085 [dir_watcher.py:finish():402] scan save: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/config.yaml config.yaml
+2023-08-16 19:04:47,169 INFO    SenderThread:69085 [dir_watcher.py:finish():402] scan save: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/wandb-summary.json wandb-summary.json
+2023-08-16 19:04:47,172 INFO    SenderThread:69085 [dir_watcher.py:finish():402] scan save: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/conda-environment.yaml conda-environment.yaml
+2023-08-16 19:04:47,172 INFO    SenderThread:69085 [dir_watcher.py:finish():402] scan save: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/wandb-metadata.json wandb-metadata.json
+2023-08-16 19:04:47,173 INFO    SenderThread:69085 [sender.py:transition_state():612] send defer: 10
+2023-08-16 19:04:47,174 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: defer
+2023-08-16 19:04:47,174 INFO    HandlerThread:69085 [handler.py:handle_request_defer():170] handle defer: 10
+2023-08-16 19:04:47,176 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: defer
+2023-08-16 19:04:47,176 INFO    SenderThread:69085 [sender.py:send_request_defer():608] handle sender defer: 10
+2023-08-16 19:04:47,176 INFO    SenderThread:69085 [file_pusher.py:finish():159] shutting down file pusher
+2023-08-16 19:04:47,375 INFO    wandb-upload_0:69085 [upload_job.py:push():131] Uploaded file /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/requirements.txt
+2023-08-16 19:04:47,485 INFO    wandb-upload_1:69085 [upload_job.py:push():131] Uploaded file /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/output.log
+2023-08-16 19:04:47,519 INFO    wandb-upload_2:69085 [upload_job.py:push():131] Uploaded file /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/config.yaml
+2023-08-16 19:04:47,618 INFO    wandb-upload_4:69085 [upload_job.py:push():131] Uploaded file /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/conda-environment.yaml
+2023-08-16 19:04:47,630 INFO    wandb-upload_3:69085 [upload_job.py:push():131] Uploaded file /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/files/wandb-summary.json
+2023-08-16 19:04:47,833 INFO    Thread-11 (_thread_body):69085 [sender.py:transition_state():612] send defer: 11
+2023-08-16 19:04:47,833 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: defer
+2023-08-16 19:04:47,833 INFO    HandlerThread:69085 [handler.py:handle_request_defer():170] handle defer: 11
+2023-08-16 19:04:47,833 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: defer
+2023-08-16 19:04:47,833 INFO    SenderThread:69085 [sender.py:send_request_defer():608] handle sender defer: 11
+2023-08-16 19:04:47,834 INFO    SenderThread:69085 [file_pusher.py:join():164] waiting for file pusher
+2023-08-16 19:04:47,834 INFO    SenderThread:69085 [sender.py:transition_state():612] send defer: 12
+2023-08-16 19:04:47,834 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: defer
+2023-08-16 19:04:47,834 INFO    HandlerThread:69085 [handler.py:handle_request_defer():170] handle defer: 12
+2023-08-16 19:04:47,834 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: defer
+2023-08-16 19:04:47,834 INFO    SenderThread:69085 [sender.py:send_request_defer():608] handle sender defer: 12
+2023-08-16 19:04:47,834 INFO    SenderThread:69085 [file_stream.py:finish():593] file stream finish called
+2023-08-16 19:04:47,924 INFO    SenderThread:69085 [file_stream.py:finish():597] file stream finish is done
+2023-08-16 19:04:47,924 INFO    SenderThread:69085 [sender.py:transition_state():612] send defer: 13
+2023-08-16 19:04:47,924 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: defer
+2023-08-16 19:04:47,924 INFO    HandlerThread:69085 [handler.py:handle_request_defer():170] handle defer: 13
+2023-08-16 19:04:47,924 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: defer
+2023-08-16 19:04:47,924 INFO    SenderThread:69085 [sender.py:send_request_defer():608] handle sender defer: 13
+2023-08-16 19:04:47,924 INFO    SenderThread:69085 [sender.py:transition_state():612] send defer: 14
+2023-08-16 19:04:47,925 DEBUG   SenderThread:69085 [sender.py:send():379] send: final
+2023-08-16 19:04:47,925 DEBUG   SenderThread:69085 [sender.py:send():379] send: footer
+2023-08-16 19:04:47,925 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: defer
+2023-08-16 19:04:47,925 INFO    HandlerThread:69085 [handler.py:handle_request_defer():170] handle defer: 14
+2023-08-16 19:04:47,925 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: defer
+2023-08-16 19:04:47,925 INFO    SenderThread:69085 [sender.py:send_request_defer():608] handle sender defer: 14
+2023-08-16 19:04:47,925 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: poll_exit
+2023-08-16 19:04:47,926 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: poll_exit
+2023-08-16 19:04:47,926 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: server_info
+2023-08-16 19:04:47,926 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: get_summary
+2023-08-16 19:04:47,926 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: sampled_history
+2023-08-16 19:04:47,927 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: server_info
+2023-08-16 19:04:47,927 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: job_info
+2023-08-16 19:04:47,983 DEBUG   SenderThread:69085 [sender.py:send_request():406] send_request: job_info
+2023-08-16 19:04:47,983 INFO    MainThread:69085 [wandb_run.py:_footer_history_summary_info():3481] rendering history
+2023-08-16 19:04:47,983 INFO    MainThread:69085 [wandb_run.py:_footer_history_summary_info():3513] rendering summary
+2023-08-16 19:04:47,983 INFO    MainThread:69085 [wandb_run.py:_footer_sync_info():3440] logging synced files
+2023-08-16 19:04:47,984 DEBUG   HandlerThread:69085 [handler.py:handle_request():144] handle_request: shutdown
+2023-08-16 19:04:47,984 INFO    HandlerThread:69085 [handler.py:finish():857] shutting down handler
+2023-08-16 19:04:48,931 INFO    WriterThread:69085 [datastore.py:close():294] close: /Users/sankaran/Research/nih-cognitive-load/wandb/run-20230816_190437-f3qdk1tu/run-f3qdk1tu.wandb
+2023-08-16 19:04:48,986 INFO    SenderThread:69085 [sender.py:finish():1552] shutting down sender
+2023-08-16 19:04:48,986 INFO    SenderThread:69085 [file_pusher.py:finish():159] shutting down file pusher
+2023-08-16 19:04:48,986 INFO    SenderThread:69085 [file_pusher.py:join():164] waiting for file pusher

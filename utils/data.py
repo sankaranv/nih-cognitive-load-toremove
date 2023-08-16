@@ -8,6 +8,7 @@ from itertools import combinations
 from math import ceil
 import datetime
 import random
+import torch
 
 global param_names, param_indices
 global role_names, role_indices
@@ -17,10 +18,10 @@ param_names = ["PNS index", "SNS index", "Mean RR", "RMSSD", "LF-HF"]
 param_indices = {"PNS index": 0, "SNS index": 1, "Mean RR": 2, "RMSSD": 3, "LF-HF": 4}
 role_names = ["Anes", "Nurs", "Perf", "Surg"]
 role_indices = {"Anes": 0, "Nurs": 1, "Perf": 2, "Surg": 3}
-cases_summary = pd.read_excel("../data/NIH-OR-cases-summary.xlsx").iloc[1:, :]
+cases_summary = pd.read_excel("./data/NIH-OR-cases-summary.xlsx").iloc[1:, :]
 
 
-def import_case_data(data_dir="../data", case_id=3, time_interval="5min"):
+def import_case_data(data_dir="./data", case_id=3, time_interval="5min"):
     relevant_lines = [66, 67, 72, 78, 111]
     if time_interval == "5min":
         phase_name = "cognitiveLoad-phases-5min"
@@ -77,13 +78,15 @@ def import_case_data(data_dir="../data", case_id=3, time_interval="5min"):
     return dataset
 
 
-def get_means(time_interval="5min"):
+def get_means(data_dir="./data", time_interval="5min"):
     means = np.zeros((5, 4))
     num_samples = np.zeros((5, 4))
     for i in range(1, 41):
         if i not in [5, 9, 14, 16, 24, 39]:
             try:
-                dataset = import_case_data(case_id=i, time_interval=time_interval)[0]
+                dataset = import_case_data(
+                    data_dir=data_dir, case_id=i, time_interval=time_interval
+                )[0]
                 num_samples += np.sum(~np.isnan(dataset), axis=-1)
                 means += np.sum(np.nan_to_num(dataset), axis=-1)
             except Exception as e:
@@ -91,14 +94,16 @@ def get_means(time_interval="5min"):
     return means / num_samples
 
 
-def get_per_phase_actor_ids(time_interval="5min"):
+def get_per_phase_actor_ids(data_dir="./data", time_interval="5min"):
     per_phase_actor_ids = {"Anes": {}, "Nurs": {}, "Perf": {}, "Surg": {}}
     phase_ids = get_phase_ids(time_interval=time_interval)
     print("Getting per phase actor IDs")
     for i in tqdm(range(1, 41)):
         if i not in [5, 9, 14, 16, 24, 39, 28]:
             try:
-                dataset = import_case_data(case_id=i, time_interval=time_interval)[0]
+                dataset = import_case_data(
+                    data_dir=data_dir, case_id=i, time_interval=time_interval
+                )[0]
                 # Ignore cases with missing per-step data
                 if dataset.shape[-1] > 1:
                     # We assume all parameters have the same number of measurements in the dataset
@@ -145,7 +150,7 @@ def hms_to_min(s):
         return int(t / 60)
 
 
-def get_phase_ids(data_dir="data", time_interval="5min"):
+def get_phase_ids(data_dir="./data", time_interval="5min"):
     phase_ids = {}
     for i in range(1, 41):
         if i not in [5, 9, 14, 16, 24, 39]:
@@ -166,17 +171,19 @@ def get_phase_ids(data_dir="data", time_interval="5min"):
     return phase_ids
 
 
-def make_dataset(time_interval="5min", param_id=None):
-    # Shape of the data for each case is (5, 4, num_samples) or (5, num_samples)
+def make_dataset_from_file(data_dir="./data", time_interval="5min", param_id=None):
+    # Shape of the data for each case is (5, 4, num_samples) or (4, num_samples)
     dataset = {}
     for i in tqdm(range(1, 41)):
         if i not in [5, 9, 14, 16, 24, 39, 28]:
             if param_id is None:
-                dataset[i] = import_case_data(case_id=i, time_interval="5min")[0]
+                dataset[i] = import_case_data(
+                    data_dir=data_dir, case_id=i, time_interval=time_interval
+                )[0]
             else:
-                dataset[i] = import_case_data(case_id=i, time_interval="5min")[0][
-                    :, param_id
-                ]
+                dataset[i] = import_case_data(
+                    data_dir=data_dir, case_id=i, time_interval=time_interval
+                )[0][param_id]
     return dataset
 
 
@@ -185,6 +192,13 @@ def make_nan_masks(dataset):
     for case_id in dataset.keys():
         nan_masks[case_id] = np.isnan(dataset[case_id])
     return nan_masks
+
+
+def get_mask(data):
+    if isinstance(data, np.ndarray):
+        return np.isnan(data)
+    elif isinstance(data, torch.Tensor):
+        return torch.isnan(data)
 
 
 def get_max_len(dataset):
@@ -217,3 +231,83 @@ def make_train_test_split(
     val_dataset = {case: dataset[case] for case in val_cases}
     test_dataset = {case: dataset[case] for case in test_cases}
     return train_dataset, val_dataset, test_dataset
+
+
+class HRVDataset(torch.utils.data.Dataset):
+    """Holds HRV data in torch.Tensor format
+    Dataset is indexed by case ID and returns a (data, nan_mask) tuple
+    Each element in the tuple has shape (4, seq_len)
+    """
+
+    def __init__(self, dataset):
+        self.cases = list(dataset.keys())
+        self.data = self.make_tensor_from_dict(dataset)
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, idx):
+        return self.data[idx]
+
+    def make_tensor_from_dict(self, dataset):
+        for case_id in dataset.keys():
+            dataset[case_id] = torch.from_numpy(dataset[case_id]).float()
+        return dataset
+
+
+def get_input_output_sequences(
+    input_window: int, output_window: int, hrv_dataset: HRVDataset
+):
+    """Prepares batches for transformer model training
+    Returns a sequence of pairs of tensors with shape (4, input_window) and (4, output_window)
+
+    Args:
+        input_window (int): number of time steps to include in the input sequence
+        output_window (int): number of time steps to include in the output sequence
+        hrv_dataset (HRVDataset): a dataset of HRV parameter values
+    """
+    in_out_seq = []
+    for i in hrv_dataset.cases:
+        data = hrv_dataset[i]
+        n = data.shape[-1]
+        for j in range(n - input_window - output_window):
+            # Slice out input sequence and take the next (output_window) values as the output sequence
+            in_out_seq.append(
+                (
+                    data[:, j : j + input_window],
+                    data[:, j + input_window : j + input_window + output_window],
+                )
+            )
+    return in_out_seq
+
+
+def get_batch(in_out_seq, batch_size, start_idx=0):
+    """Returns a batch of input/output sequences from a list of input/output sequences
+
+    Args:
+        in_out_seq_data (list): a list of tuples of input/output sequences
+        in_out_seq_mask (list): a list of tuples of input/output nan masks
+        batch_size (int): the number of sequences to include in the batch
+        start_idx (int): the index of the first sequence to include in the batch.
+    """
+    num_actors = in_out_seq[0][0].shape[0]
+    input_window = in_out_seq[0][0].shape[1]
+    output_window = in_out_seq[0][1].shape[1]
+    n = min(batch_size, len(in_out_seq) - start_idx)
+    batched_input_data = torch.Tensor(num_actors, input_window, n)
+    batched_output_data = torch.Tensor(num_actors, output_window, n)
+    for i in range(n):
+        batched_input_data[:, :, i] = in_out_seq[start_idx + i][0]
+        batched_output_data[:, :, i] = in_out_seq[start_idx + i][1]
+    return batched_input_data, batched_output_data
+
+
+if __name__ == "__main__":
+    # Load dataset
+    dataset = HRVDataset(make_dataset_from_file(param_id=1))
+    # Create input-output sequences
+    in_out_seq = get_input_output_sequences(10, 3, dataset)
+    print(len(in_out_seq), in_out_seq[0][0].shape, in_out_seq[0][1].shape)
+    # Create batches
+    batched_input_data, batched_output_data = get_batch(in_out_seq, 32)
+    print(batched_input_data.shape, batched_output_data.shape)

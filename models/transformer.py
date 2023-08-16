@@ -5,12 +5,9 @@ from typing import Tuple
 import torch
 from torch import nn, Tensor
 from torch.nn import TransformerEncoder, TransformerEncoderLayer
-from torch.utils.data import dataset
-
-from ..utils.data import make_dataset
 
 
-class TransformerModel(nn.Module):
+class ContinuousTransformer(nn.Module):
     """Create a transformer with continuous inputs and outputs.
        Token embeddings are replaced with a linear layer since we have real valued inputs.
 

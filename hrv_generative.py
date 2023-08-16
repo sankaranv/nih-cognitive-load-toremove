@@ -1,14 +1,14 @@
-from models import transformer
+from models.transformer import ContinuousTransformer
 from utils.data import *
 import argparse
 import torch
-
+import wandb
 
 if __name__ == "__main__":
     # Experiment settings and hyperparameters
     parser = argparse.ArgumentParser()
     parser.add_argument("--time_interval", type=str, default="5min")
-    parser.add_argument("--epochs", type=int, default=100)
+    parser.add_argument("--epochs", type=int, default=10)
     parser.add_argument("--lr", type=float, default=0.001)
     parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument("--n_layers", type=int, default=2)
@@ -29,6 +29,9 @@ if __name__ == "__main__":
     parser.add_argument("--test_split", type=float, default=0.2)
     args = parser.parse_args()
 
+    # Set up WandB for logging
+    wandb.init(project="nih-cognitive-load", config=args)
+
     # Set random seed
     torch.manual_seed(args.seed)
 
@@ -43,10 +46,47 @@ if __name__ == "__main__":
     hrv_param_idx = param_indices[args.hrv_param]
 
     # Load dataset and create train-val-test split
-    dataset = make_dataset(args.time_interval, hrv_param_idx)
+    dataset = make_dataset_from_file(args.time_interval, hrv_param_idx)
     train_dataset, val_dataset, test_dataset = make_train_test_split(
         dataset, args.train_split, args.val_split, args.test_split
     )
-    max_len = get_max_len(dataset)
+    train_dataset = HRVDataset(train_dataset)
+    val_dataset = HRVDataset(val_dataset)
+    test_dataset = HRVDataset(test_dataset)
 
-    # Create dataloaders
+    # Create input-output sequences for training
+    train_inputs, train_outputs = get_input_output_sequences(train_dataset)
+
+    # Set up loss and optimizer for training
+    model = ContinuousTransformer()
+    criterion = torch.nn.MSELoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.9)
+
+    # Start training
+    model.train()
+
+    for epoch in range(args.epochs):
+        for batch, start_idx in enumerate(
+            range(0, len(train_dataset), args.batch_size)
+        ):
+            # Get a batch of sequences
+            input_seq, target_seq = get_batch(
+                train_inputs, train_outputs, start_idx, args.batch_size
+            )
+
+            optimizer.zero_grad()
+            output = model(input_seq)
+            loss = criterion(output, target_seq)
+            loss.backward()
+
+            # Clip gradients to prevent exploding gradients
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            optimizer.step()
+
+            # Log results on WandB
+            if batch % args.log_freq == 0:
+                wandb.log({"loss": loss.item()})
+
+
+wandb.finish()

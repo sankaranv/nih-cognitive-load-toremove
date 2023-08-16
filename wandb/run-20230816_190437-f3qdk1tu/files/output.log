@@ -1,0 +1,6 @@
+100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 40/40 [00:00<00:00, 20877.57it/s]
+Traceback (most recent call last):
+  File "/Users/sankaran/Research/nih-cognitive-load/hrv_generative.py", line 58, in <module>
+    train_inputs, train_outputs = get_input_output_sequences(train_dataset)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: get_input_output_sequences() missing 2 required positional arguments: 'output_window' and 'hrv_dataset'

@@ -1,0 +1,42 @@
+{
+    "os": "macOS-10.16-x86_64-i386-64bit",
+    "python": "3.11.4",
+    "heartbeatAt": "2023-08-16T23:04:38.268976",
+    "startedAt": "2023-08-16T23:04:37.725105",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/Users/sankaran/Research/nih-cognitive-load/hrv_generative.py",
+    "codePath": "hrv_generative.py",
+    "git": {
+        "remote": "https://github.com/sankaranv/nih-cognitive-load",
+        "commit": "24df534be7dc201886cdd2a41ff1b821d32f275d"
+    },
+    "email": null,
+    "root": "/Users/sankaran/Research/nih-cognitive-load",
+    "host": "montecarlo",
+    "username": "sankaran",
+    "executable": "/Users/sankaran/miniconda3/envs/nih-cognitive-load/bin/python",
+    "cpu_count": 8,
+    "cpu_count_logical": 16,
+    "cpu_freq": {
+        "current": 2300,
+        "min": 2300,
+        "max": 2300
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2300,
+            "min": 2300,
+            "max": 2300
+        }
+    ],
+    "disk": {
+        "total": 931.546989440918,
+        "used": 8.536746978759766
+    },
+    "memory": {
+        "total": 32.0
+    }
+}
