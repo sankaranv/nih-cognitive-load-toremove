@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python hrv_generative.py
+python train.py > logs/output.log 2>&1
