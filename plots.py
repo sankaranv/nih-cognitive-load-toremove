@@ -10,7 +10,7 @@ from itertools import combinations
 from math import ceil
 import datetime
 import matplotlib.ticker as ticker
-from utils.data import *
+from utils.data_old import *
 
 
 def plot_params(

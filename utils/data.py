@@ -9,19 +9,23 @@ from math import ceil
 import datetime
 import random
 import torch
+from typing import Union
 
 global param_names, param_indices
+global temporal_feature_names, static_feature_names
 global role_names, role_indices
-global cases_summary
 
 param_names = ["PNS index", "SNS index", "Mean RR", "RMSSD", "LF-HF"]
+temporal_feature_names = ["Phase ID", "Time"]
+static_feature_names = None
 param_indices = {"PNS index": 0, "SNS index": 1, "Mean RR": 2, "RMSSD": 3, "LF-HF": 4}
 role_names = ["Anes", "Nurs", "Perf", "Surg"]
 role_indices = {"Anes": 0, "Nurs": 1, "Perf": 2, "Surg": 3}
-cases_summary = pd.read_excel("./data/NIH-OR-cases-summary.xlsx").iloc[1:, :]
 
 
-def import_case_data(data_dir="./data", case_id=3, time_interval=5, max_length=None):
+def import_case_data(
+    data_dir="./data", case_id=3, time_interval=5, pad_to_max_len=False, max_length=None
+):
     relevant_lines = [66, 67, 72, 78, 111]
     if time_interval == 5:
         phase_name = "cognitiveLoad-phases-5min"
@@ -71,10 +75,16 @@ def import_case_data(data_dir="./data", case_id=3, time_interval=5, max_length=N
     # Add padding to the data for missing samples
     # This assumes all measurements start at the same time and just cut off early for some roles!
     for i, role_data in enumerate(dataset):
-        if role_data.shape[1] < max_length:
-            pad_length = max_length - role_data.shape[1]
-            # if role_data.shape[1] < max_num_samples:
-            #     pad_length = max_num_samples - role_data.shape[1]
+        if pad_to_max_len:
+            if max_length is None:
+                raise ValueError(
+                    "Must provide max_length if padding to max length for all cases"
+                )
+            padding_length = max_length
+        else:
+            padding_length = max_num_samples
+        if role_data.shape[1] < padding_length:
+            pad_length = max_num_samples - role_data.shape[1]
             empty_data = np.full((5, pad_length), np.nan)
             dataset[i] = np.hstack((role_data, empty_data))
 
@@ -84,52 +94,40 @@ def import_case_data(data_dir="./data", case_id=3, time_interval=5, max_length=N
     return dataset
 
 
-def get_means(data_dir="./data", time_interval=5):
+def get_means(dataset):
     means = np.zeros((5, 4))
     num_samples = np.zeros((5, 4))
-    for i in range(1, 41):
-        if i not in [5, 9, 14, 16, 24, 39]:
-            try:
-                dataset = import_case_data(
-                    data_dir=data_dir, case_id=i, time_interval=time_interval
-                )[0]
-                num_samples += np.sum(~np.isnan(dataset), axis=-1)
-                means += np.sum(np.nan_to_num(dataset), axis=-1)
-            except Exception as e:
-                print(f"There was a problem with case {i}")
+    for _, data in dataset.items():
+        num_samples += np.sum(~np.isnan(data), axis=-1)
+        means += np.sum(np.nan_to_num(data), axis=-1)
     return means / num_samples
 
 
-def get_stddevs(time_interval="5min"):
+def get_stddevs(dataset):
     samples = {}
     std_devs = np.zeros((5, 4))
-    for i in range(1, 41):
-        if i not in [5, 9, 14, 16, 24, 39]:
-            try:
-                dataset = import_case_data(case_id=i, time_interval=time_interval)[0]
-                for x in range(5):
-                    for y in range(4):
-                        if (x, y) not in samples:
-                            samples[(x, y)] = []
-                        samples[(x, y)] += dataset[x][y][~np.isnan(dataset[x][y])]
-            except Exception as e:
-                print(f"There was a problem with case {i}")
+    for _, data in dataset.items():
+        for x in range(5):
+            for y in range(4):
+                if (x, y) not in samples:
+                    samples[(x, y)] = np.array([])
+                samples[(x, y)] = np.concatenate(
+                    (samples[(x, y)], data[x][y][~np.isnan(data[x][y])])
+                )
     for x in range(5):
         for y in range(4):
             std_devs[x, y] = np.std(samples[(x, y)])
     return std_devs
 
 
-def get_per_phase_actor_ids(data_dir="./data", time_interval=5):
+def get_per_phase_actor_ids(dataset, time_interval=5, data_dir="./data"):
     per_phase_actor_ids = {"Anes": {}, "Nurs": {}, "Perf": {}, "Surg": {}}
     phase_ids = get_phase_ids(time_interval=time_interval)
+    cases_summary = pd.read_excel(f"{data_dir}/NIH-OR-cases-summary.xlsx").iloc[1:, :]
     print("Getting per phase actor IDs")
     for i in tqdm(range(1, 41)):
         if i not in [5, 9, 14, 16, 24, 39, 28]:
             try:
-                dataset = import_case_data(
-                    data_dir=data_dir, case_id=i, time_interval=time_interval
-                )[0]
                 # Ignore cases with missing per-step data
                 if dataset.shape[-1] > 1:
                     # We assume all parameters have the same number of measurements in the dataset
@@ -198,7 +196,14 @@ def get_phase_ids(data_dir="./data", time_interval=5):
 
 
 def make_dataset_from_file(
-    data_dir="./data", time_interval=5, param_id=None, standardize=False
+    data_dir="./data",
+    time_interval=5,
+    param_id=None,
+    standardize=False,
+    max_length=None,
+    pad_to_max_len=False,
+    temporal_features=False,
+    static_features=False,
 ):
     # Shape of the data for each case is (5, 4, num_samples) or (4, num_samples)
     dataset = {}
@@ -208,7 +213,8 @@ def make_dataset_from_file(
                 data_dir=data_dir,
                 case_id=i,
                 time_interval=time_interval,
-                max_length=122,
+                max_length=max_length,
+                pad_to_max_len=pad_to_max_len,
             )[0]
 
     # Standardize dataset
@@ -224,17 +230,19 @@ def make_dataset_from_file(
     if param_id is not None:
         for case_id in dataset.keys():
             dataset[case_id] = dataset[case_id][param_id]
+
+    # Add temporal features if requested
+    if temporal_features:
+        dataset = add_temporal_features(dataset)
+
+    # Add static features if requested
+    if static_features:
+        dataset = add_static_features(dataset)
+
     return dataset
 
 
-def make_nan_masks(dataset):
-    nan_masks = {}
-    for case_id in dataset.keys():
-        nan_masks[case_id] = np.isnan(dataset[case_id])
-    return nan_masks
-
-
-def get_mask(data):
+def get_nan_mask(data):
     if isinstance(data, np.ndarray):
         return np.isnan(data)
     elif isinstance(data, torch.Tensor):
@@ -251,7 +259,6 @@ def get_max_len(dataset):
 
 def make_train_test_split(
     dataset,
-    temporal_features,
     train_split: float = 0.6,
     val_split: float = 0.2,
     test_split: float = 0.2,
@@ -273,123 +280,18 @@ def make_train_test_split(
     val_dataset = {case: dataset[case] for case in val_cases}
     test_dataset = {case: dataset[case] for case in test_cases}
 
-    train_temporal_features = {case: temporal_features[case] for case in train_cases}
-    val_temporal_features = {case: temporal_features[case] for case in val_cases}
-    test_temporal_features = {case: temporal_features[case] for case in test_cases}
-
-    return (
-        train_dataset,
-        val_dataset,
-        test_dataset,
-        train_temporal_features,
-        val_temporal_features,
-        test_temporal_features,
-    )
+    return (train_dataset, val_dataset, test_dataset)
 
 
-class HRVDataset(torch.utils.data.Dataset):
-    """Holds HRV data in torch.Tensor format
-    Dataset is indexed by case ID and returns a (measurement feature, time feature) tuple
-    Each element in the tuple has shape (num_features, seq_len)
-    """
-
-    def __init__(self, dataset, temporal_features):
-        self.cases = list(dataset.keys())
-        self.data = self.make_tensor_from_dict(dataset)
-        self.temporal_features = self.make_tensor_from_dict(temporal_features)
-
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, idx):
-        return self.data[idx], self.temporal_features[idx]
-
-    def make_tensor_from_dict(self, dataset):
-        for case_id in dataset.keys():
-            if isinstance(dataset[case_id], np.ndarray):
-                dataset[case_id] = torch.from_numpy(dataset[case_id]).float()
-        return dataset
-
-
-def get_input_output_sequences(
-    input_window: int, output_window: int, hrv_dataset: HRVDataset
-):
-    """Prepares batches for transformer model training
-    Returns a sequence of pairs of tensors with shape (4, input_window) and (4, output_window)
-
-    Args:
-        input_window (int): number of time steps to include in the input sequence
-        output_window (int): number of time steps to include in the output sequence
-        hrv_dataset (HRVDataset): a dataset of HRV parameter values
-    """
-    in_out_seq_data = []
-    in_out_seq_temporal = []
-    for i in hrv_dataset.cases:
-        data, temporal_features = hrv_dataset[i]
-        n = data.shape[-1]
-        for j in range(n - input_window - output_window):
-            # Slice out input sequence and take the next (output_window) values as the output sequence
-            in_out_seq_data.append(
-                (
-                    data[:, j : j + input_window],
-                    data[:, j + input_window : j + input_window + output_window],
-                )
-            )
-            # Do the same for temporal features
-            in_out_seq_temporal.append(
-                (
-                    temporal_features[:, j : j + input_window],
-                    temporal_features[
-                        :, j + input_window : j + input_window + output_window
-                    ],
-                )
-            )
-    return in_out_seq_data, in_out_seq_temporal
-
-
-def get_batch(in_out_seq_data, in_out_seq_temporal, batch_size, start_idx=0):
-    """Returns a batch of input/output sequences from a list of input/output sequences
-    Outputs should have shape (batch_size, seq_len, n_features)
-    Args:
-        in_out_seq_data (list): a list of tuples of input/output sequences
-        batch_size (int): the number of sequences to include in the batch
-        start_idx (int): the index of the first sequence to include in the batch.
-    """
-
-    num_value_features = in_out_seq_data[0][0].shape[0]
-    num_temporal_features = in_out_seq_temporal[0][0].shape[0]
-    input_window = in_out_seq_data[0][0].shape[1]
-    output_window = in_out_seq_data[0][1].shape[1]
-    n = min(batch_size, len(in_out_seq_data) - start_idx)
-
-    # Create output tensors for each batch
-    batched_input_data = torch.Tensor(n, input_window, num_value_features)
-    batched_output_data = torch.Tensor(n, output_window, num_value_features)
-    batched_input_temporal = torch.Tensor(n, input_window, num_temporal_features)
-    batched_output_temporal = torch.Tensor(n, output_window, num_temporal_features)
-
-    # Add each subsequence to the batch
-    for i in range(n):
-        batched_input_data[i, :, :] = in_out_seq_data[start_idx + i][0].t()
-        batched_output_data[i, :, :] = in_out_seq_data[start_idx + i][1].t()
-        batched_input_temporal[i, :, :] = in_out_seq_temporal[start_idx + i][0].t()
-        batched_output_temporal[i, :, :] = in_out_seq_temporal[start_idx + i][1].t()
-
-    return (
-        batched_input_data,
-        batched_output_data,
-        batched_input_temporal,
-        batched_output_temporal,
-    )
-
-
-def make_temporal_features(dataset, time_interval=5, num_phases=8):
+def make_temporal_features(dataset, time_interval=5, num_phases=8, return_type="np"):
     """Make temporal features for time-series models
     We will use phase ID and time within the surgery as features
 
     Args:
         dataset (dict): a dictionary of HRV parameter values
         time_interval (str): the time interval to use for temporal features
+        num_phases (int): the number of phases to use for temporal features
+        return_type (str): Specifies whether to return a numpy array or torch tensor. Defaults to "np".
     """
 
     phase_ids = get_phase_ids(time_interval=time_interval)
@@ -398,48 +300,334 @@ def make_temporal_features(dataset, time_interval=5, num_phases=8):
     for case in range(1, 41):
         if case not in [5, 9, 14, 16, 24, 39, 28]:
             # For every case, create a vector of features for each time step
-            temporal_features[case] = torch.zeros(
-                (num_phases + 2, dataset[case].shape[-1])
-            )
-
             # Set the last feature to be the time within the surgery
-            temporal_features[case][-1, :] = torch.Tensor(
-                [j for j in range(dataset[case].shape[-1])]
-            )
+            if return_type == "np":
+                features = np.zeros((num_phases + 2, dataset[case].shape[-1]))
+                features[-1, :] = np.array([j for j in range(dataset[case].shape[-1])])
+            else:
+                features = torch.zeros((num_phases + 2, dataset[case].shape[-1]))
+                features[-1, :] = torch.Tensor(
+                    [j for j in range(dataset[case].shape[-1])]
+                )
 
             # The remaining features are a one-hot vector indicating which phase is active at each time step
             # The last phase indicates that no phase is active
-            temporal_features[case][:-1, num_phases + 1] = 1
+            features[:-1, num_phases + 1] = 1
 
             for phase in range(num_phases):
                 phase_start = phase_ids[case][phase][0]
                 phase_end = phase_ids[case][phase][1]
                 if phase_end is not None and phase_start is not None:
-                    temporal_features[case][phase, phase_start:phase_end] = 1
+                    features[phase, phase_start:phase_end] = 1
                     # A phase was active so set the no phase feature to 0
-                    temporal_features[case][num_phases + 1, phase_start:phase_end] = 0
+                    features[num_phases + 1, phase_start:phase_end] = 0
+
+            temporal_features[case] = features
+
+            # # Stack features for each of the four actors
+            # if return_type == "np":
+            #     temporal_features[case] = np.stack(
+            #         [features] * dataset[case].shape[0], axis=0
+            #     )
+            # elif return_type == "torch":
+            #     temporal_features[case] = torch.stack(
+            #         [features] * dataset[case].shape[0], axis=0
+            #     )
 
     return temporal_features
 
 
-if __name__ == "__main__":
-    # Load dataset
-    dataset = make_dataset_from_file(param_id=1)
-    temporal_features = make_temporal_features(dataset, time_interval=5)
-    train_dataset = HRVDataset(dataset, temporal_features)
-    # Create input-output sequences
-    in_out_seq_data, in_out_seq_temporal = get_input_output_sequences(
-        10, 3, train_dataset
-    )
-    print(in_out_seq_data[0][0].shape, in_out_seq_data[0][1].shape)
-    # print(len(in_out_seq), in_out_seq[0][0].shape, in_out_seq[0][1].shape)
-    # # Create batches
-    # batched_input_data, batched_output_data = get_batch(in_out_seq, 32)
-    # print(batched_input_data.shape, batched_output_data.shape)
-    # input_mask = get_mask(batched_input_data)
-    # output_mask = get_mask(batched_output_data)
-    # print(input_mask.shape, output_mask.shape)
+def one_hot(
+    idx: Union[int, list],
+    num_categories: int,
+    zero_based=True,
+    return_type: str = "list",
+):
+    """Create a one-hot vector for the given categorical feature
+    Supports both zero-based and one-based indexing, and multiclass features
 
-    # # Test temporal features
-    # temporal_features = make_temporal_features(dataset, time_interval=5)
-    # print(temporal_features[1][:, 0])
+    Args:
+        idx (int, list): the index or list of indices of the categories
+        num_categories (int): the number of categories
+        zero_based (bool): whether the index is zero-based or one-based
+        return_type (str): Specifies whether to return a numpy array, torch tensor, or list. Defaults to "list".
+
+    Returns:
+        list: a one-hot vector
+    """
+    # Create vector of zeros
+    if return_type == "list":
+        one_hot = [0] * num_categories
+    elif return_type == "np":
+        one_hot = np.zeros(num_categories)
+    elif return_type == "torch":
+        one_hot = torch.zeros(num_categories)
+
+    # Assign value 1 to the given index
+    if isinstance(idx, int):
+        if zero_based:
+            one_hot[idx] = 1
+        else:
+            one_hot[idx - 1] = 1
+        return one_hot
+    elif (
+        isinstance(idx, list) or isinstance(idx, np.ndarray) or isinstance(torch.Tensor)
+    ):
+        for i in idx:
+            if zero_based:
+                one_hot[i] = 1
+            else:
+                one_hot[i - 1] = 1
+        return one_hot
+
+    else:
+        raise ValueError(f"Indices should be of type int or list, got {type(idx)}")
+
+
+def make_static_features(
+    data_dir="./data", return_type="np", unroll_through_time=False, lengths=None
+):
+    """Make static features for time-series models
+    We will use procedure type, number of vessels, 30-day mortality,
+    180-day mortality, 30-day morbidity, 30-day SSI, and the IDs of the
+    anesthesiologist, perfusionist, surgeon, and nurse
+
+    Args:
+        data_dir (str): the directory containing the data
+        return_type (str): Specifies whether to return a numpy array or torch Tensor. Defaults to "np".
+
+    Returns:
+        dict: a dictionary of static features
+    """
+    static_features = {}
+    surg_procedure_encoding = {"CABG": 0, "AVR": 1, "min. inv. AVR": 2, "AVR/CABG": 3}
+    metadata = pd.read_excel(
+        f"{data_dir}/metadata-for-statisticians-2022-10-04.xlsx", header=1
+    )
+    for idx, row in metadata.iterrows():
+        case_id = int(row["Case ID"].split("_")[1])
+        if case_id not in [5, 9, 14, 16, 24, 39, 28]:
+            procedure_type = surg_procedure_encoding[row["Procedure Type"]]
+            no_vessels = 0 if pd.isna(row["No. Vessels"]) else int(row["No. Vessels"])
+            day_mort_30 = round(row["30 Day Mort."] * 100, 2)
+            day_mort_180 = round(row["180 Day Mort."] * 100, 2)
+            day_morb_30 = round(row["30 Day Morb."] * 100, 2)
+            day_ssi_30 = round(row["30 Day SSI"] * 100, 2)
+            anes_id = int(row["Anesthesia Code"][-2:])
+            perf_id = int(row["Perfusionist Code"][-2:])
+            surg_id = int(row["Surgeon Code"][-2:])
+            nurs_id = int(row["Nurse Code"][-2:])
+            features = (
+                one_hot(procedure_type, 4)
+                + [
+                    no_vessels,
+                    day_mort_30,
+                    day_mort_180,
+                    day_morb_30,
+                    day_ssi_30,
+                ]
+                + one_hot(anes_id, 5, zero_based=False)
+                + one_hot(perf_id, 5, zero_based=False)
+                + one_hot(surg_id, 3, zero_based=False)
+                # + one_hot(nurs_id, 18) # 18 categories is very long and some are never in the data, skipping this feature for now
+            )
+            if return_type == "np":
+                static_features[case_id] = np.array(features)
+            elif return_type == "torch":
+                static_features[case_id] = torch.Tensor(features)
+            else:
+                raise ValueError(
+                    f"Invalid return type {return_type}. Must be 'np' or 'torch'"
+                )
+
+    if unroll_through_time:
+        if lengths is None:
+            raise ValueError(
+                "Lengths must be provided if unrolling static features through time"
+            )
+        return unroll_static_features(static_features, lengths, return_type)
+    else:
+        return static_features
+
+
+def get_lengths(dataset):
+    lengths = {}
+    for case_id in dataset.keys():
+        lengths[case_id] = dataset[case_id].shape[-1]
+    return lengths
+
+
+def unroll_static_features(static_features, lengths, return_type="np"):
+    static_feature_dict = {}
+    for case_id in lengths.keys():
+        if return_type == "np":
+            static_feature_dict[case_id] = np.tile(
+                static_features[case_id], (lengths[case_id], 1)
+            ).transpose()
+        elif return_type == "torch":
+            static_feature_dict[case_id] = torch.tile(
+                static_features[case_id], (lengths[case_id], 1)
+            ).transpose()
+        else:
+            raise ValueError(
+                f"Invalid return type {return_type}. Must be 'np' or 'torch'"
+            )
+    return static_feature_dict
+
+
+def add_temporal_features(dataset):
+    # Look at the first key in the dataset to determine the return type
+    if isinstance(dataset[list(dataset.keys())[0]], np.ndarray):
+        return_type = "np"
+    elif isinstance(dataset[list(dataset.keys())[0]], torch.Tensor):
+        return_type = "torch"
+    else:
+        raise ValueError(
+            f"Invalid dataset type {type(dataset)}. Must be np.ndarray or torch.Tensor"
+        )
+
+    # Make the temporal features
+    temporal_features = make_temporal_features(dataset, return_type=return_type)
+
+    # Temporal features are identical for every parameter and actor
+    # Dataset shape is (num_params, num_actors, num_samples)
+    # Temporal features shape is (num_temporal_features, num_samples)
+    # The returned dataset should have shape (num_params, num_actors, num_temporal_features + 1, num_samples)
+    new_dataset = {}
+
+    for case_id in dataset.keys():
+        case_data = dataset[case_id]
+
+        # If dataset shape is (num_params, num_actors, num_samples)
+        # Add an axis such that the shape is now (num_params, num_actors, 1, num_samples)
+        if len(case_data.shape) == 3:
+            if return_type == "np":
+                case_data = np.expand_dims(case_data, axis=2)
+            else:
+                case_data = case_data.unsqueeze(2)
+
+        # Dataset shape should be (num_params, num_actors, num_features, num_samples)
+        if return_type == "np":
+            new_dataset[case_id] = np.concatenate(
+                (
+                    case_data,
+                    np.tile(
+                        temporal_features[case_id],
+                        (case_data.shape[0], case_data.shape[1], 1, 1),
+                    ),
+                ),
+                axis=2,
+            )
+        elif return_type == "torch":
+            new_dataset[case_id] = torch.cat(
+                (
+                    case_data,
+                    torch.tile(
+                        temporal_features[case_id],
+                        (case_data.shape[0], case_data.shape[1], 1, 1),
+                    ),
+                ),
+                dim=2,
+            )
+
+    return new_dataset
+
+
+def add_static_features(dataset):
+    # Look at the first key in the dataset to determine the return type
+    if isinstance(dataset[list(dataset.keys())[0]], np.ndarray):
+        return_type = "np"
+    elif isinstance(dataset[list(dataset.keys())[0]], torch.Tensor):
+        return_type = "torch"
+    else:
+        raise ValueError(
+            f"Invalid dataset type {type(dataset)}. Must be np.ndarray or torch.Tensor"
+        )
+
+    # Make the static features
+    static_features = make_static_features(
+        return_type=return_type, unroll_through_time=True, lengths=get_lengths(dataset)
+    )
+
+    # Static features are identical for every parameter and actor
+    # Dataset shape can be (num_params, num_actors, num_samples) or (num_params, num_actors, num_features, num_samples)
+    # Temporal features shape is (num_static_features, num_samples)
+    # The returned dataset should have shape (num_params, num_actors, num_features + num_static_features, num_samples)
+
+    new_dataset = {}
+
+    for case_id in dataset.keys():
+        case_data = dataset[case_id]
+
+        # If dataset shape is (num_params, num_actors, num_samples)
+        # Add an axis such that the shape is now (num_params, num_actors, 1, num_samples)
+        if len(case_data.shape) == 3:
+            if return_type == "np":
+                case_data = np.expand_dims(case_data, axis=2)
+            else:
+                case_data = case_data.unsqueeze(2)
+
+        # Dataset shape should be (num_params, num_actors, num_features, num_samples)
+        if return_type == "np":
+            new_dataset[case_id] = np.concatenate(
+                (
+                    case_data,
+                    np.tile(
+                        static_features[case_id],
+                        (case_data.shape[0], case_data.shape[1], 1, 1),
+                    ),
+                ),
+                axis=2,
+            )
+        elif return_type == "torch":
+            new_dataset[case_id] = torch.cat(
+                (
+                    case_data,
+                    torch.tile(
+                        static_features[case_id],
+                        (case_data.shape[0], case_data.shape[1], 1, 1),
+                    ),
+                ),
+                dim=2,
+            )
+
+    return new_dataset
+
+
+def combine_feature_sets(feature_dicts: tuple, keys: list, return_type="np"):
+    """Combine feature vectors from the different dictionaries of feature sets
+    Used to append any combination of static, temporal, and HRV features
+
+    Args:
+        feature_dicts (tuple): a tuple of dictionaries of feature vectors
+    """
+    output_dict = {}
+    for feature_dict in feature_dicts:
+        if not isinstance(feature_dict, dict):
+            raise ValueError(
+                f"Expected a dictionary of features but got {type(feature_dict)}"
+            )
+        for key in keys:
+            if key not in feature_dict:
+                raise ValueError(f"Key {key} not found in feature dictionary")
+            if key not in output_dict:
+                output_dict[key] = []
+            output_dict[key].append(feature_dict[key])
+
+    for key in keys:
+        if return_type == "np":
+            output_dict[key] = np.hstack(output_dict[key])
+        elif return_type == "torch":
+            output_dict[key] = torch.cat(output_dict[key], dim=0)
+        else:
+            raise ValueError(
+                f"Invalid return type {return_type}. Must be 'np' or 'torch'"
+            )
+
+    return output_dict
+
+
+if __name__ == "__main__":
+    dataset = make_dataset_from_file(temporal_features=True, static_features=True)
+    for k in dataset.keys():
+        print(dataset[k].shape)
