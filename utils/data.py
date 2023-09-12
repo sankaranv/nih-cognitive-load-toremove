@@ -97,7 +97,12 @@ def import_case_data(
 def get_means(dataset):
     means = np.zeros((5, 4))
     num_samples = np.zeros((5, 4))
-    for _, data in dataset.items():
+    for _, case_data in dataset.items():
+        if len(case_data.shape) == 3:
+            data = case_data
+        elif case_data.shape[-2] > 1:
+            # If temporal or static features are present, ignore them
+            data = case_data[:, :, 0, :]
         num_samples += np.sum(~np.isnan(data), axis=-1)
         means += np.sum(np.nan_to_num(data), axis=-1)
     return means / num_samples
@@ -283,7 +288,9 @@ def make_train_test_split(
     return (train_dataset, val_dataset, test_dataset)
 
 
-def make_temporal_features(dataset, time_interval=5, num_phases=8, return_type="np"):
+def make_temporal_features(
+    dataset, time_interval=5, num_phases=8, return_type="np", pad_phase_on=True
+):
     """Make temporal features for time-series models
     We will use phase ID and time within the surgery as features
 
@@ -318,7 +325,12 @@ def make_temporal_features(dataset, time_interval=5, num_phases=8, return_type="
                 phase_start = phase_ids[case][phase][0]
                 phase_end = phase_ids[case][phase][1]
                 if phase_end is not None and phase_start is not None:
-                    features[phase, phase_start:phase_end] = 1
+                    if pad_phase_on:
+                        # The feature is always 1 for any timestep after the phase starts
+                        features[phase, phase_start:] = 1
+                    else:
+                        # The feature is 1 only when the phase is active and 0 when it finishes
+                        features[phase, phase_start:phase_end] = 1
                     # A phase was active so set the no phase feature to 0
                     features[num_phases + 1, phase_start:phase_end] = 0
 
@@ -625,6 +637,90 @@ def combine_feature_sets(feature_dicts: tuple, keys: list, return_type="np"):
             )
 
     return output_dict
+
+
+def extract_fully_observed_sequences(dataset):
+    """
+    Extract fully observed sequences from dataset
+    """
+    num_cases = 0
+    fully_observed_sequences = None
+    for case_idx, case_data in dataset.items():
+        usable_rows_per_case = None
+        num_cases += case_data.shape[-1]
+        for param_data in case_data:
+            param_data = np.transpose(param_data, (2, 0, 1))
+            mask = np.all(~np.isnan(param_data), axis=(1, 2))
+            usable_rows_per_param = param_data[mask]
+            usable_rows_per_param = np.transpose(usable_rows_per_param, (1, 2, 0))
+            usable_rows_per_param = usable_rows_per_param[np.newaxis, :, :, :]
+            if usable_rows_per_case is None:
+                usable_rows_per_case = usable_rows_per_param
+            else:
+                usable_rows_per_case = np.concatenate(
+                    (usable_rows_per_case, usable_rows_per_param), axis=0
+                )
+        if fully_observed_sequences is None:
+            fully_observed_sequences = usable_rows_per_case
+        else:
+            fully_observed_sequences = np.concatenate(
+                (fully_observed_sequences, usable_rows_per_case), axis=3
+            )
+
+    # Report percentage of usable cases
+    print(
+        f"{fully_observed_sequences.shape[-1]/num_cases * 100 :.2f}% of the data is fully observed"
+    )
+    print(f"Shape of fully observed sequence data: {fully_observed_sequences.shape}")
+    return fully_observed_sequences
+
+
+def extract_all_sequences(dataset):
+    sequences = None
+    for case_idx, case_data in dataset.items():
+        print(case_data.shape)
+        if sequences is None:
+            sequences = case_data
+        else:
+            sequences = np.concatenate((sequences, case_data), axis=3)
+    return sequences
+
+
+def drop_edge_phases(dataset, drop_first=True, drop_last=False, time_interval=5):
+    """Drop all timesteps from the first phase and/or last phase of each case
+       Hopefully this gets rid of the long empty sequences at the start of prediction window
+
+    Args:
+        dataset (dict): dataset of HRV parameters
+    """
+    phase_ids = get_phase_ids(time_interval=time_interval)
+    first_key = next(iter(phase_ids))
+    first_phase_id = 0
+    last_phase_id = len(phase_ids[first_key]) - 1
+    new_dataset = {}
+    for case_id in dataset.keys():
+        # Case data has shape (num_params, num_actors, num_features, num_samples)
+        case_data = dataset[case_id]
+        first_phase_end_idx = phase_ids[case_id][first_phase_id][1]
+        last_phase_start_idx = phase_ids[case_id][last_phase_id][0]
+        if drop_first and first_phase_end_idx is not None:
+            new_dataset[case_id] = case_data[:, :, :, first_phase_end_idx:]
+        if drop_last and last_phase_start_idx is not None:
+            new_dataset[case_id] = case_data[:, :, :, :last_phase_start_idx]
+    return new_dataset
+
+
+def normalize_per_case(dataset):
+    """Normalize each case to have mean 0 and std 1"""
+    new_dataset = {}
+    for case_id in dataset.keys():
+        case_data = dataset[case_id]
+        means = np.nanmean(case_data, axis=-1)
+        stds = np.nanstd(case_data, axis=-1)
+        new_dataset[case_id] = (case_data - means[..., np.newaxis]) / stds[
+            ..., np.newaxis
+        ]
+    return new_dataset
 
 
 if __name__ == "__main__":

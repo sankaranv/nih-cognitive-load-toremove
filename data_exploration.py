@@ -588,8 +588,8 @@ def get_phase_ids(data_dir="data", time_interval="5min"):
 latex_dir = "648bad436055ba2df65649bc"
 time_interval = "5min"
 # generate_per_phase_density_plots(latex_dir, time_interval)
-# generate_line_plots('plots', latex_dir, time_interval)
+generate_line_plots("plots", latex_dir, time_interval)
 # generate_scatterplots(latex_dir, time_interval)
 # plot_densities_by_role(latex_dir, time_interval)
-scatterplots_per_phase(latex_dir, time_interval, color_by="x")
-scatterplots_per_phase(latex_dir, time_interval, color_by="y")
+# scatterplots_per_phase(latex_dir, time_interval, color_by="x")
+# scatterplots_per_phase(latex_dir, time_interval, color_by="y")
