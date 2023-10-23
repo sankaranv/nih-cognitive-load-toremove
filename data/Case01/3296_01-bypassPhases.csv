@@ -1,0 +1,5 @@
+Onset_Time,Offset_Time,Duration_Time,Sender,Subject,Class,Marker,Comment
+,,,,,,,
+0:05:01,4:05:34,,HMC post hoc,,Bypass,01. Before bypass,Start of Patient Arrival to Start of A Bypass ON
+4:05:35,6:22:57,,HMC post hoc,primary perfusionist,Bypass,02. During bypass,Start of A Bypass ON to end of B Bypass OFF
+6:22:58,7:34:29,,HMC post hoc,,Bypass,03. After bypass,End of B Bypass OFF to End of Sternal Closure

@@ -1,0 +1,5 @@
+Onset_Time,Offset_Time,Duration_Time,Sender,Subject,Class,Marker,Comment,
+,,,,,,,,
+0:00:00,2:21:36,,HMC post hoc,,Bypass,01. Before bypass,Start of Video to Start of A Bypass ON,Video started after Patient Arrival.
+2:21:37,3:50:34,,HMC post hoc,primary perfusionist,Bypass,02. During bypass,Start of A Bypass ON to End of B Bypass OFF,
+3:50:35,5:23:23,,HMC post hoc,,Bypass,03. After bypass,End of B Bypass OFF to End of Patient Departure,

@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/Users/sankaran/Projects/nih-cognitive-load/models/linear_nn.py", line 174, in <module>
+    train_loss = model.train(train_loader, optimizer, criterion, device)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sankaran/Projects/nih-cognitive-load/models/linear_nn.py", line 106, in train
+    optimizer.zero_grad()
+TypeError: Optimizer.zero_grad() missing 1 required positional argument: 'self'

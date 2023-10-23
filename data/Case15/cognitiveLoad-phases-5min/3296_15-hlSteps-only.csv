@@ -1,0 +1,19 @@
+Onset_Time,Offset_Time,Duration_Time,Sender,Subject,Class,Marker,Comment
+0:00:00,0:00:00,0:00:00,,,,,
+0:00:00,0:00:00,0:00:00,,,,,
+0:21:22,0:21:25,0:00:03,LKM live,,Medical,00. Patient Arrival,
+0:25:39,0:40:36,0:14:57,LKM live - edited post hoc,,Medical,01. Pre-induction,
+0:34:19,1:17:01,0:42:42,LKM live - edited post hoc,,Medical,02. Anesthesia Induction,
+1:27:15,2:20:28,0:53:13,LKM live - edited post hoc,,Medical,03. Sterile Prepping,
+2:15:15,2:16:08,0:00:53,LKM live - edited post hoc,,Medical,04. Pre-incision Time-out,
+2:17:53,2:36:24,0:18:31,LKM live - edited post hoc,,Medical,05. Sternotomy,
+2:19:46,3:35:35,1:15:50,LKM live - edited post hoc,,Medical,06. Vessel Harvesting,The Surg team was arguing with the Anes team.
+3:13:16,3:55:14,0:41:58,LKM live - edited post hoc,,Medical,07. Heparinization,
+3:39:44,4:09:53,0:30:09,LKM live - edited post hoc,,Medical,08. Aortic Cannulation,
+4:06:11,4:07:16,0:01:05,LKM live - edited post hoc,,Medical,09. Initiate CPB,
+4:12:39,4:16:59,0:04:20,LKM live - edited post hoc,,Medical,10. Clamp Aorta and Deliver Cardioplegia,
+4:20:09,5:28:46,1:08:38,LKM live - edited post hoc,,Medical,11. Anatomoses - Aortotomy,
+5:41:43,6:00:45,0:19:02,LKM live - edited post hoc,,Medical,12. Separate from Bypass,
+6:10:33,6:45:51,0:35:18,LKM live - edited post hoc,,Medical,13. Sternal Closure,The Nurs team needed to find 2 missing needles.
+6:51:10,6:51:41,0:00:31,LKM live - edited post hoc,,Medical,14. Post-operative Debrief,
+7:45:02,7:45:05,0:00:03,LKM live,None,Medical,15. Patient Departure,

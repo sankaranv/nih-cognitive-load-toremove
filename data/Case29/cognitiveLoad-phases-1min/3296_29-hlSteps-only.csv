@@ -1,0 +1,18 @@
+﻿Onset_Time,Offset_Time,Duration_Time,Sender,Subject,Class,Marker,Comment
+0:00:00,0:00:00,0:00:00,,,,,
+0:00:00,0:00:00,0:00:00,,,,,
+0:24:19,0:24:22,0:00:03,LKM live,,,00. Patient Arrival,
+0:36:43,1:16:59,0:40:16,LKM live - edited post hoc,,,02. Anesthesia Induction,
+0:38:30,1:04:54,0:26:23,LKM live - edited post hoc,,,01. Pre-induction,
+1:22:07,1:57:32,0:35:24,LKM live - edited post hoc,,,03. Sterile Prepping,
+1:59:24,2:00:17,0:00:53,LKM live - edited post hoc,,,04. Pre-incision Time-out,
+2:01:46,2:15:44,0:13:58,LKM live - edited post hoc,,,05. Sternotomy,resident surgeon started sternotomy
+2:36:28,3:19:02,0:42:33,LKM live - edited post hoc,,,08. Aortic Cannulation,
+2:39:16,2:52:34,0:13:19,LKM live - edited post hoc,,,07. Heparinization,
+3:07:26,3:09:07,0:01:42,LKM live - edited post hoc,,,09. Initiate CPB,
+3:23:15,3:26:45,0:03:30,LKM live - edited post hoc,,,10. Clamp Aorta and Deliver Cardioplegia,
+3:28:41,4:51:22,1:22:41,LKM live - edited post hoc,,,11. Anatomoses - Aortotomy,
+4:51:26,5:10:27,0:19:01,LKM live - edited post hoc,,,12. Separate from Bypass,
+5:21:05,5:50:24,0:29:19,LKM live - edited post hoc,,,13. Sternal Closure,
+5:38:58,5:39:46,0:00:48,LKM live - edited post hoc,,,14. Post-operative Debrief,
+6:10:17,6:10:20,0:00:03,LKM live,,,15. Patient Departure,

@@ -1,0 +1,50 @@
+﻿Onset_Time,Offset_Time,Duration_Time,Sender,Subject,Class,Marker,Comment
+0:00:00,0:00:00,0:00:00,,,,,
+0:00:00,0:00:00,0:00:00,,,,,
+0:09:45,0:09:48,0:00:03,LKM live,,,00. Patient Arrival,
+0:20:09,0:22:12,0:02:03,LKM live - edited post hoc,circulating nurse,Medical,Patient Confirmation,
+0:20:09,1:25:17,1:05:08,LKM live - edited post hoc,,,01. Pre-induction,
+0:23:29,0:29:09,0:05:40,LKM live - edited post hoc,SRNA,Lines,Arterial Monitoring Line,
+0:23:29,1:16:30,0:53:01,LKM live - edited post hoc,,,02. Anesthesia Induction,
+0:25:37,0:31:50,0:06:13,LKM live - edited post hoc,attending anesthesiologist,Lines,Additional IV,
+0:35:34,0:42:07,0:06:32,LKM live - edited post hoc,SRNA,Medical,Induction,
+0:42:12,0:43:15,0:01:03,LKM live - edited post hoc,SRNA,Medical,Intubation,used glidescope
+0:45:56,0:45:59,0:00:03,LKM live - edited post hoc,,,,anes resident contaminated sterile CVL kit
+0:49:45,1:16:30,0:26:44,LKM live - edited post hoc,resident anesthesiologist,Lines,Central Venous Line,
+1:07:18,1:09:42,0:02:24,LKM live - edited post hoc,attending anesthesiologist,Lines,Central Venous Line,attending took over
+1:20:23,1:58:56,0:38:33,LKM live - edited post hoc,,,03. Sterile Prepping,
+2:05:27,2:06:35,0:01:08,LKM live - edited post hoc,,,04. Pre-incision Time-out,
+2:06:40,3:38:16,1:31:36,LKM live - edited post hoc,PA,Harvesting,SV,
+2:06:40,3:38:16,1:31:36,LKM live - edited post hoc,,,06. Vessel Harvesting,
+2:14:17,2:23:10,0:08:53,LKM live - edited post hoc,,,05. Sternotomy,
+2:16:14,2:16:17,0:00:03,LKM live - edited post hoc,attending surgeon,Equipment,,attending surg had to ask twice for an instrument
+2:22:39,2:22:42,0:00:03,LKM live,resident anesthesiologist,Ventilator,A Ventilator Off,attending anesthesiologist
+2:23:07,2:23:10,0:00:03,LKM live,resident anesthesiologist,Ventilator,B Ventilator On,attending anesthesiologist
+2:25:36,3:23:13,0:57:37,LKM live - edited post hoc,attending surgeon,Harvesting,LIMA,
+3:31:57,5:55:00,2:23:03,LKM live - edited post hoc,,,,2nd attending surgeon scrubbed in (no fellow)
+3:45:23,4:08:38,0:23:15,LKM live - edited post hoc,,,08. Aortic Cannulation,
+3:45:52,4:19:41,0:33:49,LKM live - edited post hoc,,,07. Heparinization,
+3:46:45,3:46:48,0:00:03,LKM live,SRNA,Medication,Heparin,
+4:03:54,4:03:57,0:00:03,LKM live,primary perfusionist,Medical,ACT Announced,
+4:04:15,4:04:18,0:00:03,LKM live,attending surgeon,Cannulation,Arterial Cannula,
+4:05:53,4:05:56,0:00:03,LKM live,attending anesthesiologist,Medication,Heparin,2nd dose
+4:07:27,4:07:30,0:00:03,LKM live,attending surgeon,Cannulation,Venous Cannula,
+4:08:38,4:08:41,0:00:03,LKM live,attending surgeon,Cannulation,Antegrade Cannula,
+4:11:38,4:13:47,0:02:09,LKM live - edited post hoc,,,09. Initiate CPB,
+4:13:36,4:13:39,0:00:03,LKM live,primary perfusionist,Bypass,A Bypass On,
+4:16:31,4:19:30,0:02:59,LKM live - edited post hoc,,,10. Clamp Aorta and Deliver Cardioplegia,
+4:16:36,4:16:39,0:00:03,LKM live,attending surgeon,X clamp,A X Clamp On,
+4:16:43,4:16:46,0:00:03,LKM live,primary perfusionist,Cardioplegia,A Cardioplegia On,
+4:19:30,4:19:33,0:00:03,LKM live,primary perfusionist,Cardioplegia,B Cardioplegia Off,
+4:21:33,5:38:35,1:17:02,LKM live - edited post hoc,,,11. Anatomoses - Aortotomy,
+5:19:49,5:19:52,0:00:03,LKM live - edited post hoc,attending surgeon,X clamp,B X Clamp Off,
+5:20:00,5:20:03,0:00:03,LKM live,attending surgeon,Side-biting Clamp,A Side-biting Clamp On,
+5:38:35,5:38:38,0:00:03,LKM live - edited post hoc,attending surgeon,Side-biting Clamp,B Side-biting Clamp Off,
+5:47:14,6:10:49,0:23:35,LKM live - edited post hoc,,,12. Separate from Bypass,
+5:47:31,5:47:34,0:00:03,LKM live - edited post hoc,attending anesthesiologist,Ventilator,A Ventilator On,
+5:50:27,5:50:30,0:00:03,LKM live,primary perfusionist,Bypass,B Bypass Off,
+5:55:37,5:55:40,0:00:03,LKM live,resident anesthesiologist,Medication,Protamine,Test Dose Protamine
+5:57:20,5:57:23,0:00:03,LKM live,resident anesthesiologist,Medication,Protamine,50% Protamine In
+6:10:49,6:10:52,0:00:03,LKM live,resident anesthesiologist,Medication,Protamine,Protamine All In
+6:18:43,7:19:42,1:00:58,LKM live - edited post hoc,,,13. Sternal Closure,
+7:47:26,7:47:29,0:00:03,LKM live,None,Medical,15. Patient Departure,

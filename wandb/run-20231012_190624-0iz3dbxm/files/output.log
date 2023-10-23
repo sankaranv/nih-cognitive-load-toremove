@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/sankaran/Projects/nih-cognitive-load/models/linear_nn.py", line 177, in <module>
+    train_loss = model.train(train_loader, optimizer, criterion, device)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sankaran/Projects/nih-cognitive-load/models/linear_nn.py", line 107, in train
+    self.optimizer.zero_grad()
+    ^^^^^^^^^^^^^^
+  File "/Users/sankaran/.miniconda3/envs/nih-cognitive-load/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1614, in __getattr__
+    raise AttributeError("'{}' object has no attribute '{}'".format(
+AttributeError: 'OneLayerLinear' object has no attribute 'optimizer'

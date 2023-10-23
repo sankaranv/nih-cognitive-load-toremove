@@ -1,0 +1,59 @@
+﻿Onset_Time,Offset_Time,Duration_Time,Sender,Subject,Class,Marker,Comment
+0:00:00,0:00:00,0:00:00,,,,,
+0:00:00,0:00:00,0:00:00,,,,,
+0:04:05,0:04:08,0:00:03,LKM live - edited post hoc,,,00. Patient Arrival,
+0:13:34,1:08:10,0:54:36,LKM live - edited post hoc,,,01. Pre-induction,
+0:13:34,0:16:18,0:02:44,LKM live - edited post hoc,circulating nurse,Medical,Patient Confirmation,
+0:20:48,0:26:33,0:05:45,LKM live - edited post hoc,attending anesthesiologist,Medical,Induction,
+0:20:48,0:54:44,0:33:56,LKM live - edited post hoc,,,02. Anesthesia Induction,
+0:21:12,0:30:34,0:09:22,LKM live - edited post hoc,resident anesthesiologist,Lines,Arterial Monitoring Line,
+0:27:00,0:27:24,0:00:24,LKM live - edited post hoc,attending anesthesiologist,Medical,Intubation,
+0:35:05,0:44:02,0:08:57,LKM live - edited post hoc,resident anesthesiologist,Lines,Central Venous Line,
+0:41:15,0:45:38,0:04:23,LKM live - edited post hoc,attending anesthesiologist,Lines,Additional IV,
+0:44:13,0:54:44,0:10:31,LKM live - edited post hoc,resident anesthesiologist,Lines,Swan Ganz,
+1:05:29,1:44:22,0:38:54,LKM live - edited post hoc,,,03. Sterile Prepping,
+1:46:44,1:47:19,0:00:35,LKM live - edited post hoc,,,04. Pre-incision Time-out,
+1:47:47,3:32:58,1:45:10,LKM live - edited post hoc,,,06. Vessel Harvesting,
+1:47:47,3:32:58,1:45:10,LKM live - edited post hoc,PA,Harvesting,SV,
+1:47:48,1:55:16,0:07:28,LKM live - edited post hoc,,,05. Sternotomy,
+2:01:19,2:54:26,0:53:07,LKM live - edited post hoc,resident surgeon,Harvesting,LIMA,
+3:13:40,3:48:25,0:34:45,LKM live - edited post hoc,,,08. Aortic Cannulation,
+3:27:02,3:53:26,0:26:24,Other live - edited post hoc,,,07. Heparinization,
+3:27:38,3:27:41,0:00:03,Other live - edited post hoc,resident anesthesiologist,Medication,Heparin,
+3:38:59,3:39:02,0:00:03,Other live - edited post hoc,primary perfusionist,Medical,ACT Announced,389
+3:39:28,3:39:31,0:00:03,LKM post hoc,resident anesthesiologist,,Heparin,2nd Heparin Dose
+3:41:29,3:41:32,0:00:03,LKM post hoc,resident surgeon,,Arterial Cannula,
+3:46:24,3:46:27,0:00:03,LKM post hoc,resident surgeon,,Venous Cannula,
+3:48:25,3:48:28,0:00:03,LKM post hoc,resident surgeon,,Antegrade Cannula,
+3:53:26,3:53:29,0:00:03,LKM post hoc,primary perfusionist,,ACT Announced,
+3:55:04,3:56:57,0:01:54,Other live - edited post hoc,,,09. Initiate CPB,
+3:56:51,3:56:54,0:00:03,LKM post hoc,resident anesthesiologist,,A Ventilator Off,
+3:56:57,3:57:00,0:00:03,LKM post hoc,primary perfusionist,,A Bypass On,
+3:59:54,4:03:39,0:03:45,Other live - edited post hoc,,,10. Clamp Aorta and Deliver Cardioplegia,
+3:59:57,4:00:00,0:00:03,LKM post hoc,attending surgeon,,A X Clamp On,
+4:00:11,4:00:14,0:00:03,LKM post hoc,primary perfusionist,,A Cardioplegia On,
+4:03:39,4:03:42,0:00:03,LKM post hoc,primary perfusionist,,B Cardioplegia Off,
+4:12:35,6:10:56,1:58:21,Other live - edited post hoc,,,11. Anatomoses - Aortotomy,
+5:33:10,5:33:13,0:00:03,Other live - edited post hoc,attending surgeon,X clamp,B X Clamp Off,
+5:33:39,5:33:42,0:00:03,LKM post hoc,attending surgeon,,A Side-biting Clamp On,
+6:10:56,6:10:59,0:00:03,LKM post hoc,attending surgeon,,B Side-biting Clamp Off,
+6:37:54,6:43:14,0:05:21,Other live - edited post hoc,,,12. Separate from Bypass,first attempt to separate from bypass
+6:38:44,6:38:47,0:00:03,Other live - edited post hoc,attending anesthesiologist,Ventilator,B Ventilator On,
+6:43:14,6:43:17,0:00:03,Other live - edited post hoc,primary perfusionist,Bypass,B Bypass Off,
+6:55:14,8:21:35,1:26:21,LKM post hoc,,,,2nd attending surgeon scrubbed in
+6:57:29,6:57:32,0:00:03,Other live - edited post hoc,,,09. Initiate CPB,going back on pump
+6:57:32,6:57:35,0:00:03,LKM post hoc,primary perfusionist,,A Bypass On,
+7:11:44,7:16:04,0:04:20,LKM post hoc,,,10. Clamp Aorta and Deliver Cardioplegia,second time aorta is clamped
+7:11:47,7:11:50,0:00:03,LKM post hoc,2nd attending surgeon,,A X Clamp On,re-clamped
+7:11:54,7:11:57,0:00:03,LKM post hoc,primary perfusionist,,A Cardioplegia On,second time delivering cardiplegia
+7:16:04,7:16:07,0:00:03,Other live - edited post hoc,primary perfusionist,Cardioplegia,B Cardioplegia Off,
+7:16:10,7:46:44,0:30:34,Other live - edited post hoc,,,11. Anatomoses - Aortotomy,second anastomosis phase to re-do the grafts
+7:46:44,7:46:47,0:00:03,Other live,primary perfusionist,X clamp,B X Clamp Off,
+7:48:46,8:24:36,0:35:50,Other live - edited post hoc,,,12. Separate from Bypass,second attempt to separate from bypass
+7:49:02,7:49:05,0:00:03,Other live,attending anesthesiologist,Ventilator,B Ventilator On,
+8:05:12,8:05:15,0:00:03,Other live - edited post hoc,primary perfusionist,Bypass,B Bypass Off,
+8:14:12,8:14:12,,LKM post hoc,attending anesthesiologist,,Protamine,Test Dose Protamine
+8:18:02,8:18:05,0:00:03,LKM post hoc,attending anesthesiologist,,Protamine,50% Protamine
+8:24:36,8:24:39,0:00:03,LKM post hoc,attending anesthesiologist,,Protamine,All In Protamine
+8:54:59,9:35:37,0:40:38,Other live - edited post hoc,,,13. Sternal Closure,
+9:57:52,9:57:55,0:00:03,Other live - edited post hoc,,,15. Patient Departure,

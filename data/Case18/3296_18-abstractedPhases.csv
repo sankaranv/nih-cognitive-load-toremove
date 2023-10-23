@@ -1,0 +1,11 @@
+Onset_Time,Offset_Time,Duration_Time,Sender,Subject,Class,Marker,Comment
+,,,,,,,
+,,,,,,,
+0:33:26,1:09:49,,HMC post hoc,,Medical,01. Preparation and induction,"Pre-induction, Anesthesia Induction"
+1:49:06,3:18:02,,HMC post hoc,,Medical,02. Opening,"Pre-incision Time-out, Vessel Harvesting, Sternotomy "
+3:32:07,3:58:05,,HMC post hoc,,Medical,03. Pre-bypass preparation,"Heparinization, Aortic Cannulation"
+4:10:43,4:20:02,,HMC post hoc,,Medical,04. Initiate CPB and arrest heart,"Initiate CPB, Clamp Aorta and Deliver Cardioplegia"
+4:26:36,6:13:59,,HMC post hoc,,Medical,05. Surgical repair,Anastomoses - Aortotomy
+6:15:54,6:44:44,,HMC post hoc,,Medical,06. Wean from bypass,Separate from Bypass
+7:17:27,8:10:05,,HMC post hoc,,Medical,07. Closure,Sternal Closure
+8:10:06,8:27:19,,HMC post hoc,,Medical,08. Post-operative,End of Sternal Closure and end of Patient Departure

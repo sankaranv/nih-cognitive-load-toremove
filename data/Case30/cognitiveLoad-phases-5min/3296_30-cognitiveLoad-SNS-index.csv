@@ -1,0 +1,7 @@
+CASE 3296_30
+
+,00. Patient Arrival,01. Pre-induction,02. Anesthesia Induction,03. Sterile Prepping,04. Pre-incision Time-out,05. Sternotomy,06. Vessel Harvesting,07. Heparinization,08. Aortic Cannulation,09. Initiate CPB,10. Clamp Aorta and Deliver Cardioplegia,11. Anatomoses - Aortotomy,12. Separate from Bypass,13. Sternal Closure,14. Post-operative Debrief,15. Patient Departure
+A,69.57,87.88,87.88,66.57,50.93,50.93,54.16,44.34,48.29,27.44,66.23,59.69,35.86,48.04,33.16,100.0
+N,nan,nan,48.15,100.0,34.62,34.62,47.43,27.86,33.17,21.82,29.14,61.62,77.44,78.95,nan,nan
+P,nan,nan,nan,nan,77.78,77.78,96.07,100.0,100.0,78.1,75.05,70.82,51.69,nan,nan,nan
+S,nan,47.81,47.81,62.3,37.59,37.59,54.12,77.0,77.0,63.55,74.87,100.0,94.08,76.52,37.25,nan

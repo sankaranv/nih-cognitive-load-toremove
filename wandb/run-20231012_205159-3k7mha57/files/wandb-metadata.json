@@ -1,0 +1,45 @@
+{
+    "os": "macOS-10.16-x86_64-i386-64bit",
+    "python": "3.11.3",
+    "heartbeatAt": "2023-10-13T00:52:00.541354",
+    "startedAt": "2023-10-13T00:51:59.930558",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/Users/sankaran/Projects/nih-cognitive-load/models/linear_nn.py",
+    "codePathLocal": "models/linear_nn.py",
+    "codePath": "models/linear_nn.py",
+    "git": {
+        "remote": "https://github.com/sankaranv/nih-cognitive-load",
+        "commit": "5c047da18fc56ceaf1e8244368f55c26471543eb"
+    },
+    "email": "sankaranv8@gmail.com",
+    "root": "/Users/sankaran/Projects/nih-cognitive-load",
+    "host": "treedome",
+    "username": "sankaran",
+    "executable": "/Users/sankaran/.miniconda3/envs/nih-cognitive-load/bin/python",
+    "cpu_count": 4,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 2400,
+        "min": 2400,
+        "max": 2400
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2400,
+            "min": 2400,
+            "max": 2400
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 465.62699127197266,
+            "used": 8.540298461914062
+        }
+    },
+    "memory": {
+        "total": 16.0
+    }
+}

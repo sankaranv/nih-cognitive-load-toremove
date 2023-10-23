@@ -1,0 +1,17 @@
+Onset_Time,Offset_Time,Duration_Time,Sender,Subject,Class,Marker,Comment
+0:00:00,0:00:00,0:00:00,,,,,
+0:00:00,0:00:00,0:00:00,,,,,
+0:20:01,0:20:04,0:00:03,LKM live,,Medical,00. Patient Arrival,
+0:27:57,0:47:21,0:19:25,LKM live - edited post hoc,,Medical,01. Pre-induction,
+0:30:29,1:15:34,0:45:06,LKM live - edited post hoc,,Medical,02. Anesthesia Induction,
+1:23:04,2:11:13,0:48:09,LKM live - edited post hoc,,Medical,03. Sterile Prepping,
+2:15:25,2:16:04,0:00:39,LKM live - edited post hoc,,Medical,04. Pre-incision Time-out,
+2:16:26,2:24:56,0:08:30,LKM live - edited post hoc,,Medical,05. Sternotomy,
+2:30:39,3:45:59,1:15:20,LKM live - edited post hoc,,Medical,06. Vessel Harvesting,
+3:36:57,4:35:57,0:59:00,LKM live - edited post hoc,,Medical,07. Heparinization,
+4:06:25,4:43:14,0:36:50,LKM post hoc,,,08. Aortic Cannulation,
+4:35:57,4:45:57,0:10:00,LKM post hoc,,,09. Initiate CPB,
+4:47:57,4:50:57,0:03:00,LKM post hoc,,,10. Clamp Aorta and Deliver Cardioplegia,
+4:49:00,5:41:57,0:52:57,LKM live - edited post hoc,,Medical,11. Anatomoses - Aortotomy,
+6:06:57,6:35:57,0:29:00,LKM live - edited post hoc,,Medical,12. Separate from Bypass,
+6:45:26,6:58:18,0:12:52,LKM post hoc,,,13. Sternal Closure,Video ends at 6:58:18:00

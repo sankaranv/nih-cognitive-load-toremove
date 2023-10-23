@@ -1,0 +1,25 @@
+
+torch.Size([64, 440])
+Traceback (most recent call last):
+  File "/Users/sankaran/Projects/nih-cognitive-load/models/linear_nn.py", line 176, in <module>
+    train_loss = model.train(train_loader, optimizer, criterion, device)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sankaran/Projects/nih-cognitive-load/models/linear_nn.py", line 108, in train
+    output = self.forward(data)
+             ^^^^^^^^^^^^^^^^^^
+  File "/Users/sankaran/Projects/nih-cognitive-load/models/linear_nn.py", line 98, in forward
+    out = self.model(x)
+          ^^^^^^^^^^^^^
+  File "/Users/sankaran/.miniconda3/envs/nih-cognitive-load/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sankaran/.miniconda3/envs/nih-cognitive-load/lib/python3.11/site-packages/torch/nn/modules/container.py", line 217, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "/Users/sankaran/.miniconda3/envs/nih-cognitive-load/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sankaran/.miniconda3/envs/nih-cognitive-load/lib/python3.11/site-packages/torch/nn/modules/linear.py", line 114, in forward
+    return F.linear(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: mat1 and mat2 must have the same dtype

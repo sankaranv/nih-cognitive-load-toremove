@@ -1,0 +1,41 @@
+Onset_Date,Onset_Time,Offset_Date,Offset_Time,Duration_Date,Duration_Time,Sender,Subject,Class,Marker,Comment
+0,0:00:00,0,0:00:00,0,0:00:00,,,,,
+0,0:00:00,0,0:00:00,0,0:00:00,,,,,
+,,,,,,,,,12.1. Restart ventilation,
+0,4:20:44,0,4:20:47,0,0:00:03,,Surgeon,,"Announce ""ready to restart ventilation""",
+0,4:20:51,0,4:21:12,0,0:00:21,,Anesthesiologist,,Perform lung recruitment maneuver,
+0,4:21:15,0,4:21:18,0,0:00:03,,Anesthesiologist,,Start ventilator,
+0,4:21:55,0,4:22:24,0,0:00:29,,Anesthesiologist,,Assess biventricular and valvular function,
+0,4:22:18,0,4:22:21,0,0:00:03,,Anesthesiologist,,"Announce ""ventilator is on""",
+0,4:22:21,0,4:22:24,0,0:00:03,,Anesthesiologist,,Confirm appropriate ventilation with anesthesia machine,
+,,,,,,,,,12.2. Prepare to start coming off bypass,
+0,4:23:51,0,4:24:19,0,0:00:28,,,,,resident surgeon configured pacing wires backwards
+0,4:24:32,0,4:24:35,0,0:00:03,,Surgeon,,,okay
+0,4:24:32,0,4:24:35,0,0:00:03,,Perfusionist,,,confirms ready to come to half flow
+0,4:24:33,0,4:24:36,0,0:00:03,,Anesthesiologist,,,confirms ready to come to half flow
+,,,,,,,,,12.3. Reduce CPB pump flow to half,
+0,4:24:35,0,4:24:38,0,0:00:03,,Surgeon,,"Announce ""come down to half flow""",
+0,4:24:39,0,4:24:42,0,0:00:03,,Perfusionist,,Confirm ventilator is on,
+0,4:24:40,0,4:24:43,0,0:00:03,,Anesthesiologist,,"Announce ""ventilator is on""",
+0,4:24:42,0,4:24:45,0,0:00:03,,Perfusionist,,Clamp half the venous line,
+0,4:24:43,0,4:25:12,0,0:00:29,,Perfusionist,,Set CPB pump flow,
+0,4:24:56,0,4:25:19,0,0:00:23,,Anesthesiologist,,Assess biventricular and valvular function,
+0,4:25:13,0,4:25:16,0,0:00:03,,Perfusionist,,"Announce ""half flow achieved""",
+,,,,,,,,,12.4. Assess heart function then consider inotropic/vasoactive support,
+0,4:25:14,0,4:25:17,0,0:00:03,,Surgeon,,Address heart not ejecting,he's not ejecting
+0,4:25:19,0,4:25:22,0,0:00:03,,Perfusionist,,Address heart not ejecting,I gave a gram of calcium
+0,4:25:23,0,4:25:26,0,0:00:03,,Surgeon,,Address heart not ejecting,stay like this
+0,4:25:33,0,4:25:36,0,0:00:03,,Anesthesiologist,,Consider ionotropic/vasoactive support,starting him on a little more epinephrine
+0,4:25:40,0,4:26:39,0,0:00:59,,Anesthesiologist,,Assess biventricular and valvular function,
+0,4:26:48,0,4:26:51,0,0:00:03,,Surgeon,,Address heart not ejecting,stay like this
+,,,,,,,,,12.5. Consider reducing CPB pump flow to 1 L/min,
+0,4:27:17,0,4:27:20,0,0:00:03,,Anesthesiologist,,Obtain mean arterial pressure (MAP),
+0,4:28:11,0,4:29:45,0,0:01:34,,Anesthesiologist,,Assess biventricular and valvular function,
+0,4:28:46,0,4:28:49,0,0:00:03,,Surgeon,,"Announce ""come down to 1 L/min flow""",
+0,4:28:51,0,4:28:54,0,0:00:03,,Perfusionist,,Clamp most of the venous line,
+0,4:28:52,0,4:28:58,0,0:00:06,,Perfusionist,,Set CPB pump flow,
+0,4:28:59,0,4:29:02,0,0:00:03,,Perfusionist,,"Announce ""1 L/min flow achieved""",
+,,,,,,,,,12.6. Consider terminating bypass,
+0,4:29:30,0,4:29:33,0,0:00:03,,Surgeon,,"Announce ""come off bypass""",
+0,4:29:35,0,4:29:38,0,0:00:03,,Perfusionist,,Set CPB pump flow,
+0,4:30:48,0,4:30:51,0,0:00:03,,Perfusionist,,"Announce ""off bypass""",

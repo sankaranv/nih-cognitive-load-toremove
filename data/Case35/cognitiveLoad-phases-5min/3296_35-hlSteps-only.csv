@@ -1,0 +1,18 @@
+Onset_Time,Offset_Time,Duration_Time,Sender,Subject,Class,Marker,Comment
+0:00:00,0:00:00,0:00:00,,,,,
+0:00:00,0:00:00,0:00:00,,,,,
+0:07:02,0:44:22,0:37:20,AP live - edited post hoc,,,01. Pre-induction,
+0:26:04,0:55:47,0:29:44,AP live - edited post hoc,,,02. Anesthesia Induction,
+1:04:07,1:53:40,0:49:33,AP live - edited post hoc,,,03. Sterile Prepping,
+1:45:27,1:46:53,0:01:26,LKM post hoc,,,04. Pre-incision Time-out,
+1:54:21,2:01:38,0:07:17,LKM post hoc,,,05. Sternotomy,
+1:54:57,3:32:44,1:37:47,LKM post hoc,,,06. Vessel Harvesting,
+3:07:39,4:23:39,1:16:00,LKM post hoc,,,07. Heparinization,from Perf report
+3:26:04,3:26:07,0:00:03,LKM post hoc,,,08. Aortic Cannulation,unsure of end time
+4:22:00,4:31:41,0:09:41,LKM post hoc,,,09. Initiate CPB,not 100% of start time
+4:45:42,4:49:39,0:03:57,LKM post hoc,,,10. Clamp Aorta and Deliver Cardioplegia,from Perf report
+4:50:00,5:56:35,1:06:35,LKM post hoc,,,11. Anastomoses - Aortotomy,unsure of start time
+6:04:10,6:23:55,0:19:45,LKM post hoc,,,12. Separate from Bypass,
+6:35:39,7:13:33,0:37:55,LKM post hoc,,,13. Sternal Closure,
+7:08:04,7:08:07,0:00:03,AP live,attending surgeon,Medical,14. Post-operative Debrief,unsure of end time
+8:02:26,8:02:29,0:00:03,AP live,attending anesthesiologist,Medical,15. Patient Departure,

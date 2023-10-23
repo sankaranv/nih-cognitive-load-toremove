@@ -1,0 +1,29 @@
+Onset_Date,Onset_Time,Offset_Date,Offset_Time,Duration_Date,Duration_Time,Sender,Subject,Class,Marker,Comment
+0,0:00:00,0,0:00:00,0,0:00:00,,,,,
+0,0:00:00,0,0:00:00,0,0:00:00,,,,,
+,,,,,,,,,12.1. Restart ventilation,
+0,5:47:20,0,5:47:23,0,0:00:03,,Surgeon,,"Announce ""ready to start coming off bypass""",
+0,5:47:23,0,5:47:26,0,0:00:03,,Anesthesiologist,,,"""our lungs aren't up"""
+0,5:47:25,0,5:47:28,0,0:00:03,,Surgeon,,"Announce ""ready to restart ventilation""",
+0,5:47:32,0,5:48:23,0,0:00:51,,Anesthesiologist,,Perform lung recruitment maneuver,
+0,5:48:33,0,5:48:36,0,0:00:03,,Anesthesiologist,,Start ventilator,
+0,5:49:26,0,5:49:29,0,0:00:03,,Surgeon,,"Announce ""ready to start coming off bypass""",
+0,5:49:28,0,5:49:30,0,0:00:02,,Perfusionist,,Confirm ready to start coming off bypass,
+0,5:49:30,0,5:49:33,0,0:00:03,,Perfusionist,,Confirm ventilator is on,
+0,5:49:31,0,5:49:34,0,0:00:03,,Anesthesiologist,,Confirm appropriate ventilation with anesthesia machine,
+0,5:49:35,0,5:50:31,0,0:00:57,,Anesthesiologist,,Assess biventricular and valvular function,
+,,,,,,,,,12.3. Reduce CPB pump flow to half,
+0,5:49:36,0,5:49:39,0,0:00:03,,Perfusionist,,,"""I'm coming down to half"""
+0,5:49:37,0,5:49:40,0,0:00:03,,Anesthesiologist,,,"""yes please"""
+0,5:49:41,0,5:49:44,0,0:00:03,,Perfusionist,,Clamp half the venous line,
+0,5:49:43,0,5:49:56,0,0:00:13,,Perfusionist,,Set CPB pump flow,
+0,5:49:57,0,5:50:00,0,0:00:03,,Perfusionist,,"Announce ""half flow achieved""",
+,,,,,,,,,12.5. Consider reducing CPB pump flow to 1 L/min,
+0,5:49:58,0,5:50:01,0,0:00:03,,Anesthesiologist,,"Announce ""come down to 1 L/min flow""",
+0,5:50:00,0,5:50:03,0,0:00:03,,Perfusionist,,,"""coming down to 1"""
+0,5:50:06,0,5:50:09,0,0:00:03,,Perfusionist,,Clamp most of the venous line,
+0,5:50:11,0,5:50:14,0,0:00:03,,Perfusionist,,Set CPB pump flow,
+0,5:50:14,0,5:50:17,0,0:00:03,,Perfusionist,,"Announce ""1 L/min flow achieved""",
+,,,,,,,,,12.6. Consider terminating bypass,
+0,5:50:16,0,5:50:19,0,0:00:03,,Anesthesiologist,,"Announce ""come off bypass""",
+0,5:50:27,0,5:50:30,0,0:00:03,,Perfusionist,,"Announce ""off bypass""",

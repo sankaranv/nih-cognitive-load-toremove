@@ -1,0 +1,11 @@
+Onset_Time,Offset_Time,Duration_Time,Sender,Subject,Class,Marker,Comment,Issue,,,,
+,,,,,,,,,,,,
+,,,,,,,,,,,,
+0:26:17,1:20:47,,HMC post hoc,,Medical,01. Preparation and induction,"Pre-induction, Anesthesia Induction",,,,,
+2:28:14,3:50:49,,HMC post hoc,,Medical,02. Opening,"Pre-incision Time-out, Vessel Harvesting, Sternotomy ",Overlaps with the next phase,,,,
+3:48:53,4:30:50,,HMC post hoc,,Medical,03. Pre-bypass preparation,"Heparinization, Aortic Cannulation",,,,,
+4:30:52,5:25:43,,HMC post hoc,,Medical,04. Initiate CPB and arrest heart,"Initiate CPB, Clamp Aorta and Deliver Cardioplegia",,,,,
+4:35:29,6:08:21,,HMC post hoc,,Medical,05. Surgical repair,Anastomoses - Aortotomy, RIMA, radial) and 1 proximals (RIMA, but no radial because proximal radial is grafted onto LIMA). This means there won't be a side-biter, just the X clamp to do the 3 distals, this also affected the time at which they arrested the heart (wasn't until when indicated later)
+6:22:06,6:46:29,,HMC post hoc,,Medical,06. Wean from bypass,Separate from Bypass,,,,,
+7:03:57,7:36:33,,HMC post hoc,,Medical,07. Closure,"Sternal Closure, Post-operative Debrief",,,,,
+7:36:34,8:14:47,,HMC post hoc,,Medical,08. Post-operative,End of Post-operative Debrief and end of Patient Departure,,,,,

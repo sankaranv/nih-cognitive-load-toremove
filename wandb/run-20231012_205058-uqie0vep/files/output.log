@@ -1,0 +1,22 @@
+/Users/sankaran/.miniconda3/envs/nih-cognitive-load/lib/python3.11/site-packages/torch/nn/modules/loss.py:536: UserWarning: Using a target size (torch.Size([64, 4, 11, 5])) that is different to the input size (torch.Size([64, 4, 5])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  return F.mse_loss(input, target, reduction=self.reduction)
+Traceback (most recent call last):
+  File "/Users/sankaran/Projects/nih-cognitive-load/models/linear_nn.py", line 180, in <module>
+    train_loss = model.train(train_loader, optimizer, criterion, device)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sankaran/Projects/nih-cognitive-load/models/linear_nn.py", line 113, in train
+    loss = criterion(output, target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sankaran/.miniconda3/envs/nih-cognitive-load/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sankaran/.miniconda3/envs/nih-cognitive-load/lib/python3.11/site-packages/torch/nn/modules/loss.py", line 536, in forward
+    return F.mse_loss(input, target, reduction=self.reduction)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sankaran/.miniconda3/envs/nih-cognitive-load/lib/python3.11/site-packages/torch/nn/functional.py", line 3294, in mse_loss
+    expanded_input, expanded_target = torch.broadcast_tensors(input, target)
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/sankaran/.miniconda3/envs/nih-cognitive-load/lib/python3.11/site-packages/torch/functional.py", line 74, in broadcast_tensors
+    return _VF.broadcast_tensors(tensors)  # type: ignore[attr-defined]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: The size of tensor a (4) must match the size of tensor b (11) at non-singleton dimension 2
